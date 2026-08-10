@@ -1,0 +1,33 @@
+# Node / Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Python / Environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+ENV/
+env/
+
+# Database & Generated Files
+backend/grader.db
+backend/grader.db-wal
+backend/grader.db-shm
+backend/uploads/*.png
+backend/uploads/*.jpg
+backend/uploads/*.pdf
+backend/uploads/*.jpeg
+!backend/uploads/.gitkeep
+backend/generated_reports/*.pdf
+!backend/generated_reports/.gitkeep
+
+# IDE & OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
