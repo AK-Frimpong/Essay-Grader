@@ -11,6 +11,8 @@ import {
   QrCode, 
   Coins, 
   Sparkles,
+  GraduationCap,
+  Award,
   Sun,
   Moon
 } from 'lucide-react';
@@ -44,18 +46,19 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           
           {/* Logo & School Header */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('dashboard')}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-gh-emerald-600 via-gh-emerald-500 to-gh-gold-500 p-0.5 shadow-glow-emerald flex items-center justify-center">
-              <div className="w-full h-full bg-white dark:bg-gh-slate-900 rounded-[10px] flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-gh-gold-500" />
+          <div className="flex items-center gap-3.5 cursor-pointer group" onClick={() => setView('dashboard')}>
+            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0077b6] via-emerald-600 to-amber-500 p-0.5 shadow-glow-blue dark:shadow-glow-emerald transition-transform group-hover:scale-105 flex items-center justify-center">
+              <div className="w-full h-full bg-white dark:bg-gh-slate-900 rounded-[10px] flex items-center justify-center relative overflow-hidden">
+                <GraduationCap className="w-5 h-5 text-[#0077b6] dark:text-gh-emerald-400 transition-colors" />
+                <Award className="w-2.5 h-2.5 text-amber-500 absolute top-1 right-1" />
               </div>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white font-['Outfit']">
+                <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white font-['Outfit'] group-hover:text-[#0077b6] dark:group-hover:text-gh-emerald-300 transition-colors">
                   OFFLINE ESSAY GRADER
                 </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-emerald-100 dark:bg-gh-emerald-900/80 text-emerald-800 dark:text-gh-emerald-300 border border-emerald-300 dark:border-gh-emerald-600/40">
+                <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-sky-100 dark:bg-gh-emerald-900/80 text-[#0077b6] dark:text-gh-emerald-300 border border-sky-200 dark:border-gh-emerald-600/40">
                   GH-LAN v1.0
                 </span>
               </div>
