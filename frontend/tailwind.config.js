@@ -8,6 +8,23 @@ export default {
   theme: {
     extend: {
       colors: {
+        primary: {
+          DEFAULT: '#0077b6',
+          hover: '#006094',
+          accent: '#0070f3',
+        },
+        ocean: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0284c7',
+          600: '#0077b6',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+        },
         gh: {
           emerald: {
             50: '#ecfdf5',
@@ -45,6 +62,8 @@ export default {
         'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
         'glow-emerald': '0 0 20px -5px rgba(5, 150, 105, 0.4)',
         'glow-gold': '0 0 20px -5px rgba(217, 119, 6, 0.4)',
+        'glow-blue': '0 0 20px -5px rgba(0, 119, 182, 0.4)',
+        'subtle': '0 2px 10px 0 rgba(0, 0, 0, 0.05)',
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],

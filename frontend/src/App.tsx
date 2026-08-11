@@ -25,7 +25,7 @@ export function AppContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gh-slate-950 text-slate-100 font-sans">
+    <div className="min-h-screen flex flex-col bg-[#f7f8fc] dark:bg-gh-slate-950 text-zinc-900 dark:text-slate-100 font-sans transition-colors duration-300">
       
       {/* Top LAN Network Banner */}
       <LanBanner />
@@ -43,13 +43,13 @@ export function AppContent() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 bg-gh-slate-900/60 py-6 text-xs text-slate-400">
+      <footer className="border-t border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-gh-slate-900/60 py-6 text-xs text-slate-500 dark:text-slate-400">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="w-2.5 h-2.5 rounded-full bg-gh-emerald-400 animate-ping" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-gh-emerald-400 animate-ping" />
             <span>Ghana Education Service (GES) • Offline LAN Assessment Node v1.0</span>
           </div>
-          <div className="flex items-center gap-4 text-slate-500">
+          <div className="flex items-center gap-4 text-slate-400 dark:text-slate-500">
             <span>Client-Server SQLite WAL Architecture</span>
             <span>•</span>
             <span>ReportLab & Phi-3 Mini Powered</span>

@@ -5,10 +5,26 @@
 @layer base {
   :root {
     color-scheme: light dark;
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --color-primary: #0077b6;
+    --color-zinc-900: #18181b;
+  }
+
+  *, ::after, ::before, ::backdrop {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    min-height: 100%;
   }
 
   body {
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
@@ -18,8 +34,8 @@
   }
 
   html:not(.dark) body {
-    background: radial-gradient(circle at 50% 0%, #ffffff 0%, #f1f5f9 100%);
-    color: #0f172a;
+    background-color: #f7f8fc;
+    color: #18181b;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -27,7 +43,41 @@
   }
 }
 
-/* Glassmorphism and Themed Cards */
+/* Custom Text Selection Highlight */
+::selection {
+  color: #0077b6;
+  background: rgba(0, 119, 182, 0.12);
+}
+
+body ::selection {
+  color: #0077b6;
+  background: rgba(0, 119, 182, 0.12);
+}
+
+/* Custom 5px Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 99px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 119, 182, 0.5);
+}
+
+/* Glassmorphism and Elevated Themed Cards */
 html.dark .glass-panel {
   background: rgba(15, 23, 42, 0.80);
   backdrop-filter: blur(16px);
@@ -36,32 +86,10 @@ html.dark .glass-panel {
 }
 
 html:not(.dark) .glass-panel {
-  background: rgba(255, 255, 255, 0.92);
+  background: #ffffff;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-html.dark ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.5);
-}
-
-html:not(.dark) ::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.8);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(5, 150, 105, 0.4);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(16, 185, 129, 0.7);
-}

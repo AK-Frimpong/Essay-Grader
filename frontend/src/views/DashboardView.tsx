@@ -48,9 +48,9 @@ export const DashboardView: React.FC = () => {
     <div className="space-y-8 animate-in fade-in pb-12">
       
       {/* Welcome Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-900/20 via-slate-100 to-amber-900/20 dark:from-gh-emerald-950 dark:via-gh-slate-900 dark:to-gh-gold-950 border border-emerald-300 dark:border-gh-emerald-800/40 p-6 md:p-8 shadow-xl transition-colors">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-sky-100/70 via-white to-amber-100/50 dark:from-gh-emerald-950 dark:via-gh-slate-900 dark:to-gh-gold-950 border border-sky-200 dark:border-gh-emerald-800/40 p-6 md:p-8 shadow-sm dark:shadow-xl transition-colors">
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-gh-emerald-900/60 border border-emerald-300 dark:border-gh-emerald-600/40 text-emerald-800 dark:text-gh-emerald-300 text-xs font-bold">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 dark:bg-gh-emerald-900/60 border border-sky-200 dark:border-gh-emerald-600/40 text-[#0077b6] dark:text-gh-emerald-300 text-xs font-bold">
             <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-gh-gold-400" />
             <span>WAEC / GES Curricular Alignment Standard</span>
           </div>
@@ -64,14 +64,14 @@ export const DashboardView: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={() => setView('ingest')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-glow-emerald"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#0077b6] hover:bg-[#006094] dark:bg-emerald-600 dark:hover:bg-emerald-500 text-white transition shadow-glow-blue dark:shadow-glow-emerald"
             >
               <Upload className="w-4 h-4" />
               <span>Ingest New Essay / Scan</span>
             </button>
             <button
               onClick={() => setView('rubrics')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition shadow-subtle"
             >
               <BookOpen className="w-4 h-4 text-amber-600 dark:text-gh-gold-400" />
               <span>Manage WAEC Rubrics</span>
@@ -79,9 +79,9 @@ export const DashboardView: React.FC = () => {
             <a
               href={api.getCsvExportUrl()}
               download="Class_Grades_Master.csv"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition shadow-subtle"
             >
-              <FileDown className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+              <FileDown className="w-4 h-4 text-[#0077b6] dark:text-blue-400" />
               <span>Export CSV Grade Sheet</span>
             </a>
           </div>

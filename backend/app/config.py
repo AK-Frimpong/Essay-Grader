@@ -22,7 +22,7 @@ LICENSES_DIR.mkdir(parents=True, exist_ok=True)
 # LAN & Server Config
 HOST = os.getenv("HOST", "0.0.0.0")
 PORT = int(os.getenv("PORT", 8000))
-FRONTEND_PORT = int(os.getenv("FRONTEND_PORT", 3000))
+FRONTEND_PORT = int(os.getenv("FRONTEND_PORT", 5173))
 
 # Ollama LLM Configuration
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
