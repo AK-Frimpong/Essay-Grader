@@ -6,8 +6,9 @@ import os
 import socket
 from pathlib import Path
 
-# Base Directories
-BASE_DIR = Path(__file__).resolve().parent.parent
+# Base Directories (Vercel Serverless /tmp compatibility)
+IS_VERCEL = os.getenv("VERCEL") == "1"
+BASE_DIR = Path("/tmp") if IS_VERCEL else Path(__file__).resolve().parent.parent
 APP_DIR = Path(__file__).resolve().parent
 UPLOADS_DIR = BASE_DIR / "uploads"
 GENERATED_REPORTS_DIR = BASE_DIR / "generated_reports"
