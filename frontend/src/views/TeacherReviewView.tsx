@@ -151,7 +151,7 @@ export const TeacherReviewView: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <CheckSquare className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-['Outfit']">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-display">
               Review & Approve
             </h1>
           </div>
@@ -191,7 +191,7 @@ export const TeacherReviewView: React.FC = () => {
                   <div className="text-xs text-gray-500 dark:text-gray-400 font-mono">{essay.student_id} • {essay.school_name}</div>
                   <div className="text-sm text-amber-700 dark:text-amber-400 font-medium mt-0.5">{essay.title}</div>
                 </div>
-                <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
+                <span className="px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300">
                   {essay.word_count || 0} Words
                 </span>
               </div>
@@ -240,7 +240,7 @@ export const TeacherReviewView: React.FC = () => {
                   WAEC Letter Grade
                 </span>
                 <div className="flex items-center gap-3 mt-1.5">
-                  <span className={`px-4 py-1.5 rounded-xl text-xl font-black border font-['Outfit'] ${waecBadge.color}`}>
+                  <span className={`px-4 py-1.5 rounded-lg text-xl font-black border font-display ${waecBadge.color}`}>
                     {waecBadge.grade}
                   </span>
                   <div>
@@ -257,7 +257,7 @@ export const TeacherReviewView: React.FC = () => {
                 <a
                   href={api.getStudentPdfUrl(essay.id)}
                   download={`Report_Card_${essay.student_id}.pdf`}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm"
                 >
                   <FileDown className="w-4 h-4" />
                   <span>Download PDF</span>
@@ -424,7 +424,7 @@ export const TeacherReviewView: React.FC = () => {
                     <button
                       onClick={() => handleApproveAndLock(true)}
                       disabled={isSubmitting}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm disabled:opacity-50"
                     >
                       <ShieldCheck className="w-4 h-4" />
                       <span>{isSubmitting ? 'Processing...' : 'Approve & Lock Grade'}</span>

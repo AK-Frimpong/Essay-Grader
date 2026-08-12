@@ -75,18 +75,18 @@ export const LandingView: React.FC = () => {
     <div className="space-y-16 animate-in fade-in pb-16">
       
       {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-3xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 md:p-14 shadow-elevated text-center md:text-left">
+      <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-8 md:p-14 shadow-elevated text-center md:text-left">
         <div className="max-w-3xl space-y-6">
           
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#e0f2fe] dark:bg-[#0070f3]/20 border border-[#0070f3]/30 text-[#0070f3] dark:text-sky-300 text-xs font-bold shadow-xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary-50 dark:bg-primary-600/20 border border-primary-600/30 text-primary-600 dark:text-primary-300 text-xs font-bold shadow-xs">
             <GraduationCap className="w-4 h-4" />
             <span>Ghana Education Service • Offline Assessment Engine</span>
           </div>
 
           {/* Main Title */}
-          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight font-['Outfit'] leading-tight">
-            Grade Handwritten & Typed Essays <span className="text-[#0070f3] dark:text-sky-400">100% Offline</span> for Ghanaian Schools.
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight font-display leading-tight">
+            Grade Handwritten & Typed Essays <span className="text-primary-600 dark:text-primary-300">100% Offline</span> for Ghanaian Schools.
           </h1>
 
           {/* Subtext */}
@@ -98,7 +98,7 @@ export const LandingView: React.FC = () => {
           <div className="flex flex-wrap items-center gap-4 pt-2 justify-center md:justify-start">
             <button
               onClick={() => setView('dashboard')}
-              className="flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold bg-[#0070f3] hover:bg-[#005f93] text-white shadow-[0_4px_14px_0_rgba(0,112,243,0.39)] hover:shadow-[0_6px_20px_0_rgba(0,112,243,0.5)] transition-all duration-200"
+              className="flex items-center gap-2.5 px-6 py-3.5 rounded-lg text-sm font-bold bg-primary-600 hover:bg-primary-700 text-white transition-all duration-200"
             >
               <span>Launch Educator App</span>
               <ArrowRight className="w-4 h-4" />
@@ -108,7 +108,7 @@ export const LandingView: React.FC = () => {
               onClick={() => setAuthModalOpen(true, 'login')}
               className="flex items-center gap-2 px-5 py-3.5 rounded-2xl text-sm font-semibold bg-gray-100 dark:bg-gray-700/80 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition"
             >
-              <Users className="w-4 h-4 text-[#0070f3] dark:text-sky-400" />
+              <Users className="w-4 h-4 text-primary-600 dark:text-primary-300" />
               <span>{currentTeacher ? `Active: ${currentTeacher.name}` : 'Sign In / Register Teacher'}</span>
             </button>
           </div>
@@ -135,7 +135,7 @@ export const LandingView: React.FC = () => {
       {/* Feature Grid */}
       <div className="space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-2">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white font-['Outfit']">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white font-display">
             Engineered for Ghanaian Classrooms & Computer Labs
           </h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -149,12 +149,12 @@ export const LandingView: React.FC = () => {
             return (
               <div
                 key={i}
-                className="glass-panel p-6 rounded-2xl space-y-3 hover:border-[#0070f3]/50 transition-all group"
+                className="glass-panel p-6 rounded-2xl space-y-3 hover:border-primary-600/50 transition-all group"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#0070f3]/10 text-[#0070f3] dark:text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 rounded-xl bg-primary-600/10 text-primary-600 dark:text-primary-300 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Icon className="w-5 h-5" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white font-['Outfit']">{f.title}</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white font-display">{f.title}</h3>
                 <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{f.desc}</p>
               </div>
             );
@@ -166,7 +166,7 @@ export const LandingView: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white font-['Outfit']">
+            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white font-display">
               Pre-Configured WAEC Marking Schemes
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">Standard criteria for Junior & Senior High Compositions</p>
@@ -174,7 +174,7 @@ export const LandingView: React.FC = () => {
 
           <button
             onClick={() => setView('rubrics')}
-            className="text-sm font-semibold text-[#0070f3] dark:text-sky-400 hover:underline flex items-center gap-1"
+            className="text-sm font-semibold text-primary-600 dark:text-primary-300 hover:underline flex items-center gap-1"
           >
             <span>Explore All Rubrics</span>
             <ChevronRight className="w-4 h-4" />
@@ -189,7 +189,7 @@ export const LandingView: React.FC = () => {
                   <span className="px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 font-semibold text-xs">
                     {s.level}
                   </span>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-2 font-['Outfit']">{s.title}</h3>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-2 font-display">{s.title}</h3>
                 </div>
                 <span className="text-sm font-bold text-amber-600 dark:text-amber-400 font-mono bg-amber-50 dark:bg-amber-900/20 px-2.5 py-1 rounded-lg border border-amber-200 dark:border-amber-700/40">
                   {s.points}
@@ -199,7 +199,7 @@ export const LandingView: React.FC = () => {
               <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-200 dark:border-gray-700 text-xs">
                 {s.criteria.map((c, ci) => (
                   <div key={ci} className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300">
-                    <Check className="w-3.5 h-3.5 text-[#0070f3] shrink-0" />
+                    <Check className="w-3.5 h-3.5 text-primary-600 shrink-0" />
                     <span className="truncate">{c}</span>
                   </div>
                 ))}
@@ -210,8 +210,8 @@ export const LandingView: React.FC = () => {
       </div>
 
       {/* Bottom Launch Callout Banner */}
-      <div className="glass-panel p-8 md:p-10 rounded-3xl text-center space-y-4">
-        <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white font-['Outfit']">
+      <div className="glass-panel p-8 md:p-10 rounded-2xl text-center space-y-4">
+        <h3 className="text-2xl font-extrabold text-slate-900 dark:text-white font-display">
           Ready to Start Marking Class Submissions?
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 max-w-xl mx-auto">
@@ -220,7 +220,7 @@ export const LandingView: React.FC = () => {
         <div className="pt-2">
           <button
             onClick={() => setView('dashboard')}
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl text-sm font-bold bg-[#0070f3] hover:bg-[#005f93] text-white shadow-[0_4px_14px_0_rgba(0,112,243,0.39)] transition"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg text-sm font-bold bg-primary-600 hover:bg-primary-700 text-white transition"
           >
             <span>Open Teacher Dashboard</span>
             <ArrowRight className="w-4 h-4" />

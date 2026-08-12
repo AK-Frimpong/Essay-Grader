@@ -39,19 +39,15 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14">
+      <div className="px-4 sm:px-6 lg:px-8 xl:max-w-[1600px] xl:mx-auto">
+        <div className="flex items-center justify-between h-16">
           
           {/* Logo & App Name (Matching PROSBEE Brand Style) */}
-          <div 
-            className="flex items-center gap-3 cursor-pointer group select-none"
-            onClick={() => setRightSidebarOpen(true, 'chat')}
-            title="Open workspace navigation"
-          >
-            <div className="w-9 h-9 rounded-xl bg-[#0070f3] flex items-center justify-center shadow-[0_4px_14px_0_rgba(0,112,243,0.39)] group-hover:scale-105 group-hover:shadow-[0_6px_20px_0_rgba(0,112,243,0.5)] transition-all duration-200">
+          <div className="flex items-center gap-3 select-none">
+            <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center group-hover:scale-105 group-hover:shadow-[0_6px_20px_0_rgba(0,112,243,0.5)] transition-all duration-200">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <span className="font-extrabold text-base md:text-lg text-slate-900 dark:text-white uppercase tracking-wider font-['Outfit'] group-hover:text-[#0070f3] dark:group-hover:text-sky-400 transition-colors">
+            <span className="font-extrabold text-base md:text-lg text-slate-900 dark:text-white uppercase tracking-wider font-display group-hover:text-primary-600 dark:group-hover:text-primary-300 transition-colors">
               ESSAY GRADER
             </span>
           </div>
@@ -65,13 +61,13 @@ export const Navbar: React.FC = () => {
                 <button
                   key={item.id}
                   onClick={() => setView(item.id as any)}
-                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm transition-all duration-200 ${
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-lg text-sm transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#e0f2fe] dark:bg-[#0070f3]/25 text-[#0070f3] dark:text-sky-300 font-bold shadow-[0_0_12px_rgba(0,112,243,0.25)] ring-1 ring-[#0070f3]/30'
+                      ? 'bg-primary-50 dark:bg-primary-600/25 text-primary-600 dark:text-primary-300 font-bold ring-1 ring-primary-600/30'
                       : 'text-slate-600 dark:text-slate-400 font-medium hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#0070f3] dark:text-sky-300' : ''}`} />
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-primary-600 dark:text-primary-300' : ''}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -103,7 +99,7 @@ export const Navbar: React.FC = () => {
             {/* Active Teacher Profile Badge */}
             <button
               onClick={() => setAuthModalOpen(true, 'login')}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary-50 dark:bg-primary-900/30 text-[#0070f3] dark:text-sky-300 border border-[#0070f3]/30 hover:bg-[#e0f2fe] transition"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300 border border-primary-600/30 hover:bg-primary-50 transition"
               title="Switch teacher profile or register"
             >
               <Unlock className="w-3.5 h-3.5 text-emerald-500" />
@@ -113,7 +109,7 @@ export const Navbar: React.FC = () => {
             {/* Sidebar Trigger */}
             <button
               onClick={() => setRightSidebarOpen(true, 'nav')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#0070f3] hover:bg-[#005f93] text-white transition shadow-sm"
+              className="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm"
               title="Open workspace navigation"
             >
               <PanelRight className="w-4 h-4" />

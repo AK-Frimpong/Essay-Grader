@@ -112,7 +112,7 @@ export const LicenseModal: React.FC = () => {
       aria-describedby="license-modal-desc"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in"
     >
-      <div className="glass-panel relative w-full max-w-2xl bg-white dark:bg-gh-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="glass-panel relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
@@ -140,7 +140,7 @@ export const LicenseModal: React.FC = () => {
             onClick={() => setActiveTab('license')}
             className={`flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 transition ${
               activeTab === 'license'
-                ? 'border-emerald-600 dark:border-gh-emerald-500 text-emerald-700 dark:text-gh-emerald-400'
+                ? 'border-emerald-600 dark:border-emerald-500 text-emerald-700 dark:text-emerald-400'
                 : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
@@ -151,7 +151,7 @@ export const LicenseModal: React.FC = () => {
             onClick={() => setActiveTab('momo')}
             className={`flex items-center gap-2 py-3 px-4 text-xs font-semibold border-b-2 transition ${
               activeTab === 'momo'
-                ? 'border-amber-600 dark:border-gh-gold-500 text-amber-700 dark:text-gh-gold-400'
+                ? 'border-amber-600 dark:border-amber-500 text-amber-700 dark:text-amber-400'
                 : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
@@ -177,10 +177,10 @@ export const LicenseModal: React.FC = () => {
 
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-gh-emerald-400" /> License State
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> License State
               </span>
               <div className="flex items-center gap-2 mt-1">
-                <span className="px-2 py-0.5 rounded text-xs font-bold bg-emerald-100 dark:bg-gh-emerald-950 text-emerald-800 dark:text-gh-emerald-300 border border-emerald-300 dark:border-gh-emerald-700/50">
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/50">
                   {licenseStatus?.status || 'ACTIVE'}
                 </span>
                 <span className="text-xs text-slate-500 dark:text-slate-400">Valid: {licenseStatus?.valid_until || '2027'}</span>
@@ -190,9 +190,9 @@ export const LicenseModal: React.FC = () => {
 
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
               <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-                <Coins className="w-3.5 h-3.5 text-amber-600 dark:text-gh-gold-400" /> Remaining Credits
+                <Coins className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" /> Remaining Credits
               </span>
-              <p className="text-xl font-black text-amber-600 dark:text-gh-gold-400 font-['Outfit'] mt-1">
+              <p className="text-xl font-black text-amber-600 dark:text-amber-400 font-display mt-1">
                 {licenseStatus?.remaining_credits ?? 498} <span className="text-xs font-normal text-slate-500 dark:text-slate-400">essays</span>
               </p>
               <span className="text-[10px] text-slate-400 dark:text-slate-500">Used: {licenseStatus?.used_credits ?? 2} of {licenseStatus?.allowed_credits ?? 500}</span>
@@ -208,7 +208,7 @@ export const LicenseModal: React.FC = () => {
                   </label>
                   <button
                     onClick={handleGenerateTestLicense}
-                    className="text-xs text-emerald-700 dark:text-gh-emerald-400 hover:text-emerald-800 dark:hover:text-gh-emerald-300 flex items-center gap-1 font-semibold transition"
+                    className="text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 flex items-center gap-1 font-semibold transition"
                   >
                     <Sparkles className="w-3 h-3" /> Auto-Generate Test License
                   </button>
@@ -228,7 +228,7 @@ export const LicenseModal: React.FC = () => {
                 <button
                   onClick={handleActivateLicense}
                   disabled={isActivating || !licenseKeyInput.trim()}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition disabled:opacity-50 disabled:cursor-not-allowed shadow-glow-emerald"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                 >
                   <FileCheck className="w-4 h-4" />
                   <span>{isActivating ? 'Verifying RSA...' : 'Activate License'}</span>
@@ -256,7 +256,7 @@ export const LicenseModal: React.FC = () => {
                       onClick={() => setNetwork(item.id as any)}
                       className={`p-3 rounded-xl border text-center text-xs font-bold transition ${
                         network === item.id
-                          ? `${item.color} ring-2 ring-amber-500 dark:ring-gh-gold-400`
+                          ? `${item.color} ring-2 ring-amber-500 dark:ring-amber-400`
                           : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:border-slate-300'
                       }`}
                     >
@@ -293,12 +293,12 @@ export const LicenseModal: React.FC = () => {
                       onClick={() => setSelectedTier(tier)}
                       className={`p-3 rounded-xl border text-center text-xs transition ${
                         selectedTier.credits === tier.credits
-                          ? 'border-emerald-500 bg-emerald-50 dark:bg-gh-emerald-950/40 text-emerald-800 dark:text-gh-emerald-300 font-bold ring-2 ring-emerald-500'
+                          ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 font-bold ring-2 ring-emerald-500'
                           : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:border-slate-300'
                       }`}
                     >
                       <div>{tier.credits} Credits</div>
-                      <div className="font-bold text-amber-600 dark:text-gh-gold-400 mt-0.5">GHS {tier.ghs}</div>
+                      <div className="font-bold text-amber-600 dark:text-amber-400 mt-0.5">GHS {tier.ghs}</div>
                     </button>
                   ))}
                 </div>

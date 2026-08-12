@@ -193,7 +193,7 @@ export const RubricsView: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-['Outfit']">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-display">
               Rubrics & Marking Schemes
             </h1>
           </div>
@@ -204,7 +204,7 @@ export const RubricsView: React.FC = () => {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm"
         >
           <Plus className="w-4 h-4 text-white" />
           <span className="text-white">Create Rubric</span>
@@ -228,12 +228,12 @@ export const RubricsView: React.FC = () => {
                 onClick={() => setSelectedRubric(r)}
                 className={`p-5 rounded-xl border transition-all cursor-pointer ${
                   isSelected
-                    ? 'border-[#0077b6] dark:border-[#0077b6] bg-primary-50/60 dark:bg-primary-900/30 shadow-[0_0_16px_-2px_rgba(0,119,182,0.25)] ring-1 ring-[#0077b6]/30'
-                    : 'border-[#0077b6]/25 dark:border-[#0077b6]/35 bg-white dark:bg-gray-800 hover:border-[#0077b6]/50 shadow-[0_0_12px_-2px_rgba(0,119,182,0.12)] hover:shadow-[0_0_16px_-1px_rgba(0,119,182,0.2)]'
+                    ? 'border-primary-600 dark:border-primary-600 bg-primary-50/60 dark:bg-primary-900/30 ring-1 ring-primary-600/30'
+                    : 'border-primary-600/25 dark:border-primary-600/35 bg-white dark:bg-gray-800 hover:border-primary-600/50'
                 }`}
               >
                 <div className="flex items-start justify-between">
-                  <span className="px-2 py-0.5 rounded text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
+                  <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                     {r.grade_level}
                   </span>
                   <span className="text-xs font-mono font-bold text-amber-600 dark:text-amber-400">
@@ -260,12 +260,12 @@ export const RubricsView: React.FC = () => {
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-gray-200 dark:border-gray-700 pb-5">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="px-2.5 py-0.5 rounded text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
+                    <span className="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                       {selectedRubric.grade_level}
                     </span>
                     <span className="text-xs text-gray-500 dark:text-gray-400">{selectedRubric.subject}</span>
                   </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white font-['Outfit'] mt-1.5">
+                  <h2 className="text-xl font-bold text-gray-900 dark:text-white font-display mt-1.5">
                     {selectedRubric.title}
                   </h2>
                   <p className="text-sm text-gray-600 dark:text-gray-300 mt-1 max-w-2xl">
@@ -511,7 +511,7 @@ export const RubricsView: React.FC = () => {
               </button>
               <button
                 onClick={handleSaveRubric}
-                className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm"
+                className="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm"
               >
                 <FileCheck className="w-4 h-4" />
                 <span>Save Rubric</span>

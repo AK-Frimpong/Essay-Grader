@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { Navbar } from './components/Navbar';
+import { Sidebar } from './components/Sidebar';
 import { LanBanner } from './components/LanBanner';
 import { LicenseModal } from './components/LicenseModal';
 import { QrModal } from './components/QrModal';
@@ -30,16 +30,17 @@ export function AppContent() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa] dark:bg-gray-900 text-zinc-900 dark:text-slate-100 font-sans transition-colors duration-300">
-      
+    <div className="min-h-screen flex flex-col bg-ink-50 dark:bg-ink-900 text-ink-900 dark:text-ink-100 font-sans transition-colors duration-300">
+
       {/* Top LAN Network Banner */}
       <LanBanner />
 
-      {/* Main Header & Navigation */}
-      <Navbar />
+      <div className="flex flex-1 min-h-0">
+        {/* Primary navigation (Django Unfold style) */}
+        <Sidebar />
 
-      {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-12">
+        {/* Main Content Area */}
+        <main className="flex-1 w-full px-4 sm:px-6 lg:px-8 pt-8 pb-12 overflow-x-hidden">
         {currentView === 'landing' && <LandingView />}
         {currentView === 'dashboard' && <DashboardView />}
         {currentView === 'rubrics' && <RubricsView />}
@@ -47,10 +48,11 @@ export function AppContent() {
         {currentView === 'review' && <TeacherReviewView />}
         {currentView === 'analytics' && <AnalyticsView />}
       </main>
+      </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-5 text-xs text-gray-500 dark:text-gray-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <footer className="border-t border-ink-200 dark:border-ink-700 bg-white dark:bg-ink-800 py-5 text-xs text-ink-500 dark:text-ink-400">
+        <div className="px-4 sm:px-6 lg:px-8 xl:max-w-[1600px] xl:mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <span>© 2026 Essay Grader • Offline Assessment Tool</span>
           <span className="text-gray-400 dark:text-gray-500">Designed for Ghana Education Service</span>
         </div>
@@ -81,7 +83,7 @@ export function AppContent() {
           >
             <div>
               <div className="font-semibold text-sm">{toast.title}</div>
-              <div className="text-xs mt-0.5 opacity-80">{toast.message}</div>
+              <div className="text-xs mt-0.5 opacity-90">{toast.message}</div>
             </div>
             <button
               onClick={(e) => {

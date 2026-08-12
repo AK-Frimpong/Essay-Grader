@@ -53,7 +53,7 @@ export const DashboardView: React.FC = () => {
             <BookOpen className="w-3.5 h-3.5" />
             <span>WAEC / GES Assessment Standard</span>
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight font-['Outfit']">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight font-display">
             Welcome to Essay Grader
           </h1>
           <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
@@ -63,7 +63,7 @@ export const DashboardView: React.FC = () => {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={() => setView('ingest')}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm"
             >
               <Upload className="w-4 h-4 text-white" />
               <span>Upload Essay</span>
@@ -93,7 +93,7 @@ export const DashboardView: React.FC = () => {
         <div className="glass-panel p-5 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Submissions</p>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-['Outfit'] mt-1">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-display mt-1">
               {analytics?.total_essays ?? essays.length}
             </h3>
             <span className="text-xs text-gray-500 dark:text-gray-400">Essays ingested</span>
@@ -106,7 +106,7 @@ export const DashboardView: React.FC = () => {
         <div className="glass-panel p-5 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Approved & Locked</p>
-            <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 font-['Outfit'] mt-1">
+            <h3 className="text-2xl font-bold text-green-600 dark:text-green-400 font-display mt-1">
               {analytics?.approved_essays ?? 2}
             </h3>
             <span className="text-xs text-green-600 dark:text-green-400">Report cards ready</span>
@@ -119,7 +119,7 @@ export const DashboardView: React.FC = () => {
         <div className="glass-panel p-5 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Class Average</p>
-            <h3 className="text-2xl font-bold text-amber-600 dark:text-amber-400 font-['Outfit'] mt-1">
+            <h3 className="text-2xl font-bold text-amber-600 dark:text-amber-400 font-display mt-1">
               {analytics?.average_percentage ? `${analytics.average_percentage}%` : '93.2%'}
             </h3>
             <span className="text-xs text-amber-600 dark:text-amber-400">WAEC Grade A1 / B2</span>
@@ -132,7 +132,7 @@ export const DashboardView: React.FC = () => {
         <div className="glass-panel p-5 rounded-xl flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Grading Credits</p>
-            <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-['Outfit'] mt-1">
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white font-display mt-1">
               498 <span className="text-xs font-normal text-gray-500 dark:text-gray-400">left</span>
             </h3>
             <span className="text-xs text-gray-500 dark:text-gray-400">License Active</span>
@@ -149,7 +149,7 @@ export const DashboardView: React.FC = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white font-['Outfit']">Marking Schemes</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-white font-display">Marking Schemes</h2>
           </div>
           <button
             onClick={() => setView('rubrics')}
@@ -169,7 +169,7 @@ export const DashboardView: React.FC = () => {
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="px-2 py-0.5 rounded text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
+                  <span className="px-2 py-0.5 rounded-md text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                     {rubric.grade_level}
                   </span>
                   <h3 className="font-semibold text-gray-900 dark:text-white text-base mt-1.5">{rubric.title}</h3>
@@ -184,7 +184,7 @@ export const DashboardView: React.FC = () => {
               <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-300 pt-1">
                 <span className="font-medium text-gray-500 dark:text-gray-400">Criteria:</span>
                 {rubric.criteria.slice(0, 3).map((c, i) => (
-                  <span key={i} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
+                  <span key={i} className="px-2 py-0.5 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                     {c.name.split('&')[0].trim()}
                   </span>
                 ))}
@@ -198,12 +198,12 @@ export const DashboardView: React.FC = () => {
       <div className="glass-panel rounded-xl overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between bg-gray-50 dark:bg-gray-800/50">
           <div>
-            <h3 className="font-bold text-gray-900 dark:text-white text-base font-['Outfit']">Recent Essays</h3>
+            <h3 className="font-bold text-gray-900 dark:text-white text-base font-display">Recent Essays</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">Status of ingested and evaluated essays</p>
           </div>
           <button
             onClick={() => setView('ingest')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#0077b6] hover:bg-[#005f93] text-white transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-primary-600 hover:bg-primary-700 text-white transition"
           >
             <Upload className="w-3.5 h-3.5" />
             <span>Upload</span>
@@ -226,8 +226,19 @@ export const DashboardView: React.FC = () => {
             <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
               {essays.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-gray-400">
-                    No essays uploaded yet. Click "Upload" above to get started.
+                  <td colSpan={7} className="py-12 text-center">
+                    <div className="flex flex-col items-center gap-2 text-gray-400 dark:text-gray-500">
+                      <FileText className="w-10 h-10" />
+                      <p className="text-sm font-medium text-gray-600 dark:text-gray-300">No essays uploaded yet.</p>
+                      <p className="text-xs">Upload your first essay to begin grading.</p>
+                      <button
+                        onClick={() => setView('ingest')}
+                        className="mt-1 inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition"
+                      >
+                        <Upload className="w-4 h-4" />
+                        <span>Upload Essay</span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ) : (
@@ -250,7 +261,7 @@ export const DashboardView: React.FC = () => {
                       <td className="py-3 px-4">
                         {essay.percentage ? (
                           <div className="flex items-center gap-1.5">
-                            <span className="px-2 py-0.5 rounded text-xs font-bold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
+                            <span className="px-2 py-0.5 rounded-md text-xs font-bold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                               {essay.letter_grade || 'A1'}
                             </span>
                             <span className="font-semibold text-gray-900 dark:text-gray-200">{essay.percentage.toFixed(1)}%</span>
@@ -260,7 +271,7 @@ export const DashboardView: React.FC = () => {
                         )}
                       </td>
                       <td className="py-3 px-4">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold ${
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
                           isLocked
                             ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
                             : essay.status === 'EVALUATED'
@@ -274,7 +285,7 @@ export const DashboardView: React.FC = () => {
                       <td className="py-3 px-4 text-right">
                         <button
                           onClick={() => setView('review', essay.id)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-gray-700 hover:bg-[#0077b6] text-gray-700 dark:text-gray-200 hover:text-white border border-gray-200 dark:border-gray-600 transition"
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-gray-100 dark:bg-gray-700 hover:bg-primary-600 text-gray-700 dark:text-gray-200 hover:text-white border border-gray-200 dark:border-gray-600 transition"
                         >
                           {isLocked ? 'View Card' : 'Review & Lock'}
                         </button>

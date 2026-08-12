@@ -58,11 +58,11 @@ export const RightSidebar: React.FC = () => {
         {/* Top Header */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#0070f3] flex items-center justify-center shadow-[0_4px_14px_0_rgba(0,112,243,0.39)]">
+            <div className="w-9 h-9 rounded-xl bg-primary-600 flex items-center justify-center">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-gray-900 dark:text-white tracking-tight font-['Outfit']">
+              <h3 className="font-bold text-sm text-gray-900 dark:text-white tracking-tight font-display">
                 Workspace Navigation
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">Offline Node • Classroom Tools</p>
@@ -99,12 +99,12 @@ export const RightSidebar: React.FC = () => {
                     }}
                     className={`w-full p-3 rounded-xl flex items-center justify-between text-left transition ${
                       isActive
-                        ? 'bg-[#e0f2fe] dark:bg-[#0070f3]/25 border border-[#0070f3]/40 text-[#0070f3] dark:text-sky-300 font-semibold shadow-[0_0_12px_rgba(0,112,243,0.2)]'
+                        ? 'bg-primary-50 dark:bg-primary-600/25 border border-primary-600/40 text-primary-600 dark:text-primary-300 font-semibold'
                         : 'bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700'
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg ${isActive ? 'bg-[#0070f3]/15 text-[#0070f3] dark:text-sky-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-300'}`}>
+                      <div className={`p-2 rounded-lg ${isActive ? 'bg-primary-600/15 text-primary-600 dark:text-primary-300' : 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-300'}`}>
                         <Icon className="w-4 h-4" />
                       </div>
                       <div>

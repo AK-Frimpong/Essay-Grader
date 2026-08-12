@@ -140,12 +140,12 @@ export const PinAuthModal: React.FC = () => {
       aria-labelledby="pin-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-in fade-in"
     >
-      <div className={`glass-panel relative w-full max-w-md bg-white dark:bg-gh-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transition-transform ${shake ? 'animate-bounce' : ''}`}>
+      <div className={`glass-panel relative w-full max-w-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden transition-transform ${shake ? 'animate-bounce' : ''}`}>
         
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-[#0070f3] dark:text-sky-300">
+            <div className="p-2.5 rounded-xl bg-sky-100 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-primary-600 dark:text-primary-300">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
@@ -163,12 +163,12 @@ export const PinAuthModal: React.FC = () => {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-gh-slate-950/60">
+        <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/60">
           <button
             onClick={() => { setActiveTab('verify'); setErrorMsg(''); }}
             className={`flex-1 py-2.5 text-xs font-bold text-center border-b-2 transition ${
               activeTab === 'verify'
-                ? 'border-[#0077b6] dark:border-gh-emerald-400 text-[#0077b6] dark:text-gh-emerald-300 bg-white dark:bg-gh-slate-900'
+                ? 'border-primary-600 dark:border-emerald-400 text-primary-600 dark:text-emerald-300 bg-white dark:bg-slate-900'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -178,7 +178,7 @@ export const PinAuthModal: React.FC = () => {
             onClick={() => { setActiveTab('change'); setErrorMsg(''); }}
             className={`flex-1 py-2.5 text-xs font-bold text-center border-b-2 transition ${
               activeTab === 'change'
-                ? 'border-[#0077b6] dark:border-gh-emerald-400 text-[#0077b6] dark:text-gh-emerald-300 bg-white dark:bg-gh-slate-900'
+                ? 'border-primary-600 dark:border-emerald-400 text-primary-600 dark:text-emerald-300 bg-white dark:bg-slate-900'
                 : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
             }`}
           >
@@ -199,7 +199,7 @@ export const PinAuthModal: React.FC = () => {
             <div className="space-y-5">
               <div className="text-center">
                 <p className="text-xs text-slate-600 dark:text-slate-300 mb-3">
-                  Enter Teacher 4-digit PIN to perform restricted actions <span className="text-emerald-600 dark:text-gh-emerald-400 font-semibold">(Default: 1234)</span>
+                  Enter Teacher 4-digit PIN to perform restricted actions <span className="text-emerald-600 dark:text-emerald-400 font-semibold">(Default: 1234)</span>
                 </p>
 
                 {/* PIN Masked Dots / Number Boxes */}
@@ -211,7 +211,7 @@ export const PinAuthModal: React.FC = () => {
                         key={idx}
                         className={`w-12 h-14 rounded-xl border-2 flex items-center justify-center text-xl font-mono font-bold transition-all ${
                           hasDigit
-                            ? 'border-[#0077b6] dark:border-gh-emerald-400 bg-sky-50 dark:bg-gh-emerald-950/50 text-[#0077b6] dark:text-gh-emerald-300 shadow-md scale-105'
+                            ? 'border-primary-600 dark:border-emerald-400 bg-sky-50 dark:bg-emerald-950/50 text-primary-600 dark:text-emerald-300 shadow-md scale-105'
                             : 'border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/60 text-slate-400'
                         }`}
                       >
@@ -247,7 +247,7 @@ export const PinAuthModal: React.FC = () => {
                 <button
                   onClick={handleVerify}
                   disabled={isLoading || enteredPin.length < 4}
-                  className="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-[#0077b6] to-emerald-600 hover:from-[#005f93] hover:to-emerald-500 text-white shadow-lg disabled:opacity-50 transition flex items-center justify-center gap-2"
+                  className="w-full py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-primary-600 to-emerald-600 hover:from-[#005f93] hover:to-emerald-500 text-white shadow-lg disabled:opacity-50 transition flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <RefreshCw className="w-4 h-4 animate-spin" />
@@ -286,7 +286,7 @@ export const PinAuthModal: React.FC = () => {
                     value={currentPin}
                     onChange={(e) => setCurrentPin(e.target.value)}
                     placeholder="Enter current PIN (e.g. 1234)"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#0077b6]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary-600"
                     required
                   />
                   <KeyRound className="w-4 h-4 absolute right-3 top-3 text-slate-400" />
@@ -304,7 +304,7 @@ export const PinAuthModal: React.FC = () => {
                     value={newPin}
                     onChange={(e) => setNewPin(e.target.value)}
                     placeholder="Enter new 4-digit PIN"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#0077b6]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary-600"
                     required
                   />
                   <Lock className="w-4 h-4 absolute right-3 top-3 text-slate-400" />

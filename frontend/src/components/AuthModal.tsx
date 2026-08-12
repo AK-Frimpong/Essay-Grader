@@ -107,11 +107,11 @@ export const AuthModal: React.FC = () => {
         {/* Header */}
         <div className="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0070f3] flex items-center justify-center shadow-[0_4px_14px_0_rgba(0,112,243,0.39)]">
+            <div className="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center">
               <GraduationCap className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-gray-900 dark:text-white tracking-tight font-['Outfit'] uppercase">
+              <h3 className="font-extrabold text-base text-gray-900 dark:text-white tracking-tight font-display uppercase">
                 {mode === 'login' ? 'Teacher Sign In' : 'Create Teacher Profile'}
               </h3>
               <p className="text-xs text-gray-500 dark:text-gray-400">Offline School Node • GES Grader</p>
@@ -132,7 +132,7 @@ export const AuthModal: React.FC = () => {
             onClick={() => setMode('login')}
             className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition ${
               mode === 'login'
-                ? 'bg-white dark:bg-gray-700 text-[#0070f3] dark:text-sky-300 shadow-xs'
+                ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-300 shadow-xs'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
@@ -144,7 +144,7 @@ export const AuthModal: React.FC = () => {
             onClick={() => setMode('signup')}
             className={`flex-1 py-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition ${
               mode === 'signup'
-                ? 'bg-white dark:bg-gray-700 text-[#0070f3] dark:text-sky-300 shadow-xs'
+                ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-300 shadow-xs'
                 : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
@@ -167,15 +167,15 @@ export const AuthModal: React.FC = () => {
                     <button
                       key={p.id}
                       onClick={() => handleSelectProfile(p)}
-                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 hover:border-[#0070f3] dark:hover:border-sky-500 text-left transition flex items-center justify-between group"
+                      className="w-full p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/60 hover:border-primary-600 dark:hover:border-sky-500 text-left transition flex items-center justify-between group"
                     >
                       <div>
-                        <div className="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-[#0070f3] dark:group-hover:text-sky-400">
+                        <div className="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-300">
                           {p.name}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">{p.school} • {p.subject}</div>
                       </div>
-                      <ShieldCheck className="w-4 h-4 text-[#0070f3] dark:text-sky-400 opacity-60 group-hover:opacity-100" />
+                      <ShieldCheck className="w-4 h-4 text-primary-600 dark:text-primary-300 opacity-60 group-hover:opacity-100" />
                     </button>
                   ))}
                 </div>
@@ -199,7 +199,7 @@ export const AuthModal: React.FC = () => {
                       value={emailOrStaffId}
                       onChange={(e) => setEmailOrStaffId(e.target.value)}
                       placeholder="e.g. GES-2026-9812 or teacher@school.edu.gh"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none"
                     />
                     <Mail className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
                   </div>
@@ -216,7 +216,7 @@ export const AuthModal: React.FC = () => {
                       value={loginPin}
                       onChange={(e) => setLoginPin(e.target.value)}
                       placeholder="••••"
-                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none tracking-widest"
+                      className="w-full px-3.5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none tracking-widest"
                     />
                     <Lock className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
                   </div>
@@ -225,7 +225,7 @@ export const AuthModal: React.FC = () => {
                 <div className="pt-2">
                   <button
                     type="submit"
-                    className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[#0070f3] hover:bg-[#005f93] text-white shadow-sm transition"
+                    className="w-full py-2.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white shadow-sm transition"
                   >
                     Enter Workspace
                   </button>
@@ -245,7 +245,7 @@ export const AuthModal: React.FC = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Mr. Emmanuel Osei"
-                  className="w-full px-3.5 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none"
                 />
               </div>
 
@@ -260,7 +260,7 @@ export const AuthModal: React.FC = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. e.osei@ges.edu.gh"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none"
                   />
                 </div>
                 <div>
@@ -272,7 +272,7 @@ export const AuthModal: React.FC = () => {
                     value={staffId}
                     onChange={(e) => setStaffId(e.target.value)}
                     placeholder="e.g. GES-2026-104"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none"
                   />
                 </div>
               </div>
@@ -287,7 +287,7 @@ export const AuthModal: React.FC = () => {
                     value={school}
                     onChange={(e) => setSchool(e.target.value)}
                     placeholder="e.g. Achimota Basic School / JHS"
-                    className="w-full px-3.5 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none"
+                    className="w-full px-3.5 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none"
                   />
                   <Building className="w-4 h-4 text-gray-400 absolute right-3 top-2.5" />
                 </div>
@@ -303,7 +303,7 @@ export const AuthModal: React.FC = () => {
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     placeholder="English Language"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none"
                   />
                 </div>
                 <div>
@@ -316,7 +316,7 @@ export const AuthModal: React.FC = () => {
                     value={signupPin}
                     onChange={(e) => setSignupPin(e.target.value)}
                     placeholder="1234"
-                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-[#0070f3] outline-none tracking-widest"
+                    className="w-full px-3 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-white focus:ring-2 focus:ring-primary-600 outline-none tracking-widest"
                   />
                 </div>
               </div>
@@ -324,7 +324,7 @@ export const AuthModal: React.FC = () => {
               <div className="pt-3">
                 <button
                   type="submit"
-                  className="w-full py-2.5 rounded-xl text-sm font-semibold bg-[#0070f3] hover:bg-[#005f93] text-white shadow-sm transition"
+                  className="w-full py-2.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white shadow-sm transition"
                 >
                   Register Profile & Launch
                 </button>

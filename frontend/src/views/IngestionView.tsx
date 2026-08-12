@@ -272,7 +272,7 @@ export const IngestionView: React.FC = () => {
         <div>
           <div className="flex items-center gap-2">
             <Upload className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-['Outfit']">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-display">
               Upload & OCR
             </h1>
           </div>
@@ -486,7 +486,7 @@ export const IngestionView: React.FC = () => {
                 <button
                   onClick={handleRunOCRUpload}
                   disabled={isUploading || (!selectedFile && !extractedText)}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition disabled:opacity-50"
                 >
                   <RefreshCw className={`w-4 h-4 ${isUploading ? 'animate-spin' : ''}`} />
                   <span>{isUploading ? 'Processing...' : 'Run OCR'}</span>
@@ -519,7 +519,7 @@ export const IngestionView: React.FC = () => {
                     <button
                       onClick={handleGradeWithAI}
                       disabled={isEvaluating || !extractedText.trim()}
-                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm disabled:opacity-50"
+                      className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-sm font-semibold bg-primary-600 hover:bg-primary-700 text-white transition shadow-sm disabled:opacity-50"
                     >
                       <CheckSquare className="w-3.5 h-3.5" />
                       <span>Grade Essay</span>
@@ -668,7 +668,7 @@ export const IngestionView: React.FC = () => {
               <button
                 onClick={handleRunBatchIngest}
                 disabled={isBatchUploading || batchFiles.length === 0}
-                className="w-full py-3 rounded-xl font-semibold text-sm bg-[#0077b6] hover:bg-[#005f93] text-white shadow-sm disabled:opacity-50 transition flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl font-semibold text-sm bg-primary-600 hover:bg-primary-700 text-white shadow-sm disabled:opacity-50 transition flex items-center justify-center gap-2"
               >
                 {isBatchUploading ? (
                   <>
@@ -719,14 +719,14 @@ export const IngestionView: React.FC = () => {
                             <div>
                               <div className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
                                 <span>{parsed.name}</span>
-                                <span className="px-1.5 py-0.5 rounded bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-mono text-xs">
+                                <span className="px-1.5 py-0.5 rounded-md bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-mono text-xs">
                                   {parsed.id}
                                 </span>
                               </div>
                               <div className="text-xs text-gray-500 font-mono">{file.name} ({(file.size / 1024).toFixed(1)} KB)</div>
                             </div>
                           </div>
-                          <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded">
+                          <span className="text-xs font-semibold text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
                             Ready
                           </span>
                         </div>
@@ -748,7 +748,7 @@ export const IngestionView: React.FC = () => {
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 dark:text-white text-lg font-['Outfit']">
+                    <h3 className="font-bold text-gray-900 dark:text-white text-lg font-display">
                       Batch Complete
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -768,7 +768,7 @@ export const IngestionView: React.FC = () => {
                   <a
                     href={api.getCsvExportUrl(selectedRubricId)}
                     download="Class_Grade_Sheet.csv"
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-[#0077b6] hover:bg-[#005f93] text-white transition"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-primary-600 hover:bg-primary-700 text-white transition"
                   >
                     <BarChart3 className="w-3.5 h-3.5" />
                     <span>Export CSV</span>
@@ -797,7 +797,7 @@ export const IngestionView: React.FC = () => {
                         <td className="py-2.5 px-3 text-gray-500">{res.file_type}</td>
                         <td className="py-2.5 px-3 font-mono">{res.word_count}</td>
                         <td className="py-2.5 px-3">
-                          <span className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
                             res.status === 'EVALUATED'
                               ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300'
                               : 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300'
