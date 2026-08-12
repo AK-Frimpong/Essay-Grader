@@ -56,12 +56,12 @@ def get_waec_grade(percentage: float) -> dict:
     return WAEC_GRADE_SCALE[-1]  # Default to F9
 
 def get_lan_ip() -> str:
-    """Detect the local machine's LAN IP address for local network access."""
+    """Detect the local machine's LAN IP address for local network access without network blocking."""
     try:
-        # Create a dummy socket to detect routing IP
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.settimeout(0.2)
-        s.connect(("8.8.8.8", 80))
+        s.settimeout(0.1)
+        # 10.255.255.255 doesn't require active internet routing to determine local interface IP
+        s.connect(("10.255.255.255", 1))
         ip = s.getsockname()[0]
         s.close()
         return ip

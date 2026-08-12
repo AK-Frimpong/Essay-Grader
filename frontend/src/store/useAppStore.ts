@@ -17,12 +17,14 @@ export interface TeacherProfile {
   school: string;
   subject: string;
   staff_id?: string;
+  pin?: string;
 }
 
 interface AppState {
   theme: ThemeMode;
   currentView: 'landing' | 'dashboard' | 'rubrics' | 'ingest' | 'review' | 'analytics';
   selectedEssayId: string | null;
+  batchFilterIds: string[] | null;
   licenseStatus: LicenseStatus | null;
   lanStatus: LANStatus | null;
   isOfflineMode: boolean;
@@ -39,6 +41,7 @@ interface AppState {
   pinModalMode: 'verify' | 'change';
   
   currentTeacher: TeacherProfile | null;
+  registeredTeachers: TeacherProfile[];
   isAuthModalOpen: boolean;
   authModalMode: 'login' | 'signup';
   
@@ -48,6 +51,7 @@ interface AppState {
   setTheme: (theme: ThemeMode) => void;
   toggleTheme: () => void;
   setView: (view: 'landing' | 'dashboard' | 'rubrics' | 'ingest' | 'review' | 'analytics', essayId?: string | null) => void;
+  setBatchFilterIds: (ids: string[] | null) => void;
   setLicenseStatus: (status: LicenseStatus | null) => void;
   setLanStatus: (status: LANStatus | null) => void;
   toggleOfflineMode: () => void;
@@ -62,6 +66,7 @@ interface AppState {
   setPinModalOpen: (open: boolean, mode?: 'verify' | 'change') => void;
   setAuthModalOpen: (open: boolean, mode?: 'login' | 'signup') => void;
   setCurrentTeacher: (teacher: TeacherProfile | null) => void;
+  addRegisteredTeacher: (teacher: TeacherProfile) => void;
   logoutTeacher: () => void;
 
   addToast: (toast: Omit<Toast, 'id'>) => void;
@@ -86,19 +91,16 @@ applyThemeClasses(initialTheme);
 
 const savedPin = typeof localStorage !== 'undefined' ? localStorage.getItem('teacher_pin') : null;
 const savedTeacher = typeof localStorage !== 'undefined' ? localStorage.getItem('current_teacher') : null;
-const parsedTeacher = savedTeacher ? JSON.parse(savedTeacher) : {
-  id: 'tch-001',
-  name: 'Mr. Kofi Mensah',
-  email: 'kofi.mensah@achimotajhs.edu.gh',
-  school: 'Achimota Basic School / JHS',
-  subject: 'English Language',
-  staff_id: 'GES-2026-9812'
-};
+const parsedTeacher = savedTeacher ? JSON.parse(savedTeacher) : null;
+
+const savedRegistered = typeof localStorage !== 'undefined' ? localStorage.getItem('registered_teachers') : null;
+const initialRegistered: TeacherProfile[] = savedRegistered ? JSON.parse(savedRegistered) : [];
 
 export const useAppStore = create<AppState>((set) => ({
   theme: initialTheme,
   currentView: 'dashboard',
   selectedEssayId: null,
+  batchFilterIds: null,
   licenseStatus: null,
   lanStatus: null,
   isOfflineMode: true,
@@ -109,12 +111,13 @@ export const useAppStore = create<AppState>((set) => ({
   activeSidebarTab: 'nav',
 
   teacherPin: savedPin,
-  isTeacherAuthenticated: true,
+  isTeacherAuthenticated: !!parsedTeacher,
   isPinModalOpen: false,
   pinModalMode: 'verify',
 
   currentTeacher: parsedTeacher,
-  isAuthModalOpen: false,
+  registeredTeachers: initialRegistered,
+  isAuthModalOpen: !parsedTeacher,
   authModalMode: 'login',
 
   toasts: [],
@@ -132,8 +135,12 @@ export const useAppStore = create<AppState>((set) => ({
     return { theme: nextTheme };
   }),
 
-  setView: (view, essayId = null) => set({ currentView: view, selectedEssayId: essayId }),
+  setView: (view, essayId = null) => set({ 
+    currentView: view, 
+    ...(essayId !== undefined ? { selectedEssayId: essayId } : {}) 
+  }),
 
+  setBatchFilterIds: (ids) => set({ batchFilterIds: ids }),
   setLicenseStatus: (status) => set({ licenseStatus: status }),
   setLanStatus: (status) => set({ lanStatus: status }),
   toggleOfflineMode: () => set((state) => ({ isOfflineMode: !state.isOfflineMode })),
@@ -164,11 +171,20 @@ export const useAppStore = create<AppState>((set) => ({
     set({ currentTeacher: teacher, isTeacherAuthenticated: !!teacher });
   },
 
+  addRegisteredTeacher: (teacher) => set((state) => {
+    const filtered = state.registeredTeachers.filter(t => t.id !== teacher.id && t.email.toLowerCase() !== teacher.email.toLowerCase());
+    const updated = [teacher, ...filtered];
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem('registered_teachers', JSON.stringify(updated));
+    }
+    return { registeredTeachers: updated };
+  }),
+
   logoutTeacher: () => {
     if (typeof localStorage !== 'undefined') {
       localStorage.removeItem('current_teacher');
     }
-    set({ currentTeacher: null, isTeacherAuthenticated: false, currentView: 'landing' });
+    set({ currentTeacher: null, isTeacherAuthenticated: false, isAuthModalOpen: true, currentView: 'dashboard' });
   },
 
   addToast: (toast) => {

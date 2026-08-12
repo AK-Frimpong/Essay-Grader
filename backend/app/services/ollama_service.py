@@ -248,6 +248,17 @@ def evaluate_essay_with_ollama(
     
     try:
         url = f"{OLLAMA_HOST.rstrip('/')}/api/generate"
+        health_url = f"{OLLAMA_HOST.rstrip('/')}/api/tags"
+        
+        # Fast 1.5s health check to prevent long HTTP timeout when working offline
+        try:
+            health_res = requests.get(health_url, timeout=1.5)
+            if health_res.status_code != 200:
+                raise ConnectionError("Ollama service not active")
+        except Exception:
+            logger.info("Local Ollama service offline or not running. Instantly engaging offline heuristic engine...")
+            return evaluate_with_heuristic_engine(essay_text, rubric)
+
         payload = {
             "model": OLLAMA_MODEL,
             "prompt": prompt,

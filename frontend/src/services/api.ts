@@ -202,6 +202,14 @@ export const api = {
     return res.json();
   },
 
+  clearEssays: async (): Promise<{ message: string }> => {
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/essays`, {
+      method: 'DELETE',
+      headers: getHeaders(false)
+    }, 'Failed to clear essays');
+    return res.json();
+  },
+
   // AI Evaluation
   evaluateEssay: async (essay_id: string, rubric_id?: string): Promise<any> => {
     const res = await handleFetch(`${getBaseApiUrl()}/grade/evaluate`, {
@@ -252,10 +260,12 @@ export const api = {
     return `${getBaseApiUrl()}/export/bulk-pdf`;
   },
 
-  getCsvExportUrl: (rubric_id?: string): string => {
-    return rubric_id 
-      ? `${getBaseApiUrl()}/export/csv?rubric_id=${rubric_id}` 
-      : `${getBaseApiUrl()}/export/csv`;
+  getCsvExportUrl: (rubric_id?: string, essay_ids?: string[]): string => {
+    const params = new URLSearchParams();
+    if (rubric_id) params.append('rubric_id', rubric_id);
+    if (essay_ids && essay_ids.length > 0) params.append('essay_ids', essay_ids.join(','));
+    const queryString = params.toString();
+    return queryString ? `${getBaseApiUrl()}/export/csv?${queryString}` : `${getBaseApiUrl()}/export/csv`;
   },
 
   // Licensing & MoMo Top-Up

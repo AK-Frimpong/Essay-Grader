@@ -19,7 +19,7 @@ import { Essay, Grade, CriterionScore, GrammarHighlight } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
 export const TeacherReviewView: React.FC = () => {
-  const { selectedEssayId, setView, addToast, setPinModalOpen } = useAppStore();
+  const { selectedEssayId, setView, addToast, setPinModalOpen, batchFilterIds, setBatchFilterIds } = useAppStore();
   
   const [essayList, setEssayList] = useState<Essay[]>([]);
   const [activeEssayId, setActiveEssayId] = useState<string>(selectedEssayId || 'essay-stu-001');
@@ -35,15 +35,25 @@ export const TeacherReviewView: React.FC = () => {
   const [approvedBy, setApprovedBy] = useState('Mr. K. Osei-Tutu (Senior English Tutor)');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Filter essays if a batch filter is active
+  const displayedEssays = (batchFilterIds && batchFilterIds.length > 0)
+    ? essayList.filter(e => batchFilterIds.includes(e.id))
+    : essayList;
+
   // Load essays list for dropdown selector
   useEffect(() => {
     api.getEssays().then((essays) => {
       setEssayList(essays);
-      if (essays.length > 0 && !selectedEssayId) {
+      if (selectedEssayId) {
+        setActiveEssayId(selectedEssayId);
+      } else if (batchFilterIds && batchFilterIds.length > 0) {
+        const batchMatch = essays.find(e => batchFilterIds.includes(e.id));
+        if (batchMatch) setActiveEssayId(batchMatch.id);
+      } else if (essays.length > 0) {
         setActiveEssayId(essays[0].id);
       }
     }).catch(console.error);
-  }, []);
+  }, [selectedEssayId, batchFilterIds]);
 
   // Fetch workspace review data whenever activeEssayId changes
   useEffect(() => {
@@ -162,13 +172,24 @@ export const TeacherReviewView: React.FC = () => {
 
         {/* Essay Dropdown Switcher */}
         <div className="flex items-center gap-2">
+          {batchFilterIds && batchFilterIds.length > 0 && (
+            <div className="flex items-center gap-2 bg-blue-50 dark:bg-sky-950/60 border border-blue-200 dark:border-sky-800 text-blue-700 dark:text-sky-300 text-xs px-2.5 py-1.5 rounded-lg">
+              <span>Batch Filter ({displayedEssays.length})</span>
+              <button 
+                onClick={() => setBatchFilterIds(null)}
+                className="hover:underline font-semibold text-blue-900 dark:text-sky-100 ml-1"
+              >
+                Clear
+              </button>
+            </div>
+          )}
           <label className="text-sm text-gray-600 dark:text-gray-400 font-medium hidden sm:inline">Essay:</label>
           <select
             value={activeEssayId}
             onChange={(e) => setActiveEssayId(e.target.value)}
             className="px-3.5 py-2 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-primary-700 dark:text-primary-400 font-medium focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500"
           >
-            {essayList.map((ess) => (
+            {displayedEssays.map((ess) => (
               <option key={ess.id} value={ess.id}>
                 {ess.student_name} ({ess.student_id}) - {ess.title.slice(0, 30)}...
               </option>

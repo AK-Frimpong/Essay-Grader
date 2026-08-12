@@ -13,8 +13,8 @@ from app.config import GENERATED_REPORTS_DIR
 
 logger = logging.getLogger(__name__)
 
-def export_class_grade_sheet_csv(rubric_id: str = None) -> str:
-    """Generate a comprehensive CSV grade sheet for all graded essays."""
+def export_class_grade_sheet_csv(rubric_id: str = None, essay_ids: List[str] = None) -> str:
+    """Generate a comprehensive CSV grade sheet for all or batch-specific graded essays."""
     output = io.StringIO()
     writer = csv.writer(output)
 
@@ -46,11 +46,21 @@ def export_class_grade_sheet_csv(rubric_id: str = None) -> str:
         FROM essays e
         LEFT JOIN grades g ON e.id = g.essay_id
     """
+    conditions = []
     params = []
+
     if rubric_id:
-        query += " WHERE e.rubric_id = ?"
+        conditions.append("e.rubric_id = ?")
         params.append(rubric_id)
     
+    if essay_ids and len(essay_ids) > 0:
+        placeholders = ",".join(["?"] * len(essay_ids))
+        conditions.append(f"e.id IN ({placeholders})")
+        params.extend(essay_ids)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
     query += " ORDER BY e.student_name ASC"
 
     with get_db() as conn:

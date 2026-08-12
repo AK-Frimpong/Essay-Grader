@@ -25,7 +25,7 @@ import { Rubric } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
 export const IngestionView: React.FC = () => {
-  const { setView, addToast, lanStatus } = useAppStore();
+  const { setView, addToast, lanStatus, setBatchFilterIds } = useAppStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const batchFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -623,10 +623,6 @@ export const IngestionView: React.FC = () => {
                 />
                 <span>Automatically grade all essays after ingestion</span>
               </label>
-
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                Up to 50 essays per batch
-              </span>
             </div>
           </div>
 
@@ -759,19 +755,27 @@ export const IngestionView: React.FC = () => {
 
                 <div className="flex gap-2">
                   <button
-                    onClick={() => setView('review')}
+                    onClick={() => {
+                      const batchEssayIds = batchResults?.results?.map((r: any) => r.essay_id).filter(Boolean) || [];
+                      if (batchEssayIds.length > 0) {
+                        setBatchFilterIds(batchEssayIds);
+                        setView('review', batchEssayIds[0]);
+                      } else {
+                        setView('review');
+                      }
+                    }}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-white border border-gray-200 dark:border-gray-600 hover:bg-gray-50 transition"
                   >
                     <Users className="w-3.5 h-3.5" />
-                    <span>Review</span>
+                    <span>Review Batch</span>
                   </button>
                   <a
-                    href={api.getCsvExportUrl(selectedRubricId)}
-                    download="Class_Grade_Sheet.csv"
+                    href={api.getCsvExportUrl(selectedRubricId, batchResults?.results?.map((r: any) => r.essay_id).filter(Boolean))}
+                    download="Batch_Grades_Master.csv"
                     className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-[#0077b6] hover:bg-[#005f93] text-white transition"
                   >
                     <BarChart3 className="w-3.5 h-3.5" />
-                    <span>Export CSV</span>
+                    <span>Export Batch CSV</span>
                   </a>
                 </div>
               </div>

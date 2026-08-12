@@ -541,3 +541,12 @@ def delete_essay(essay_id: str):
     
     log_audit("ESSAY_DELETED", essay_id=essay_id, details="Deleted essay and associated grades")
     return {"message": "Essay deleted successfully."}
+
+@router.delete("/essays")
+def clear_all_essays():
+    """Clear all ingested essays and grades from the database."""
+    with get_db() as conn:
+        conn.execute("DELETE FROM grades")
+        conn.execute("DELETE FROM essays")
+    log_audit("CLEAR_ESSAYS", details="Cleared all student essays and grades")
+    return {"message": "All essays cleared successfully."}

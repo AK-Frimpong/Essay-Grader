@@ -84,13 +84,15 @@ def download_bulk_pdf_zip():
     )
 
 @router.get("/csv")
-def download_class_csv(rubric_id: str = None):
-    """Download class-wide CSV grade master spreadsheet."""
-    csv_content = export_class_grade_sheet_csv(rubric_id)
+def download_class_csv(rubric_id: str = None, essay_ids: str = None):
+    """Download class-wide or batch-specific CSV grade master spreadsheet."""
+    ids_list = [i.strip() for i in essay_ids.split(",") if i.strip()] if essay_ids else None
+    csv_content = export_class_grade_sheet_csv(rubric_id, ids_list)
+    filename = "Batch_Grades_Master.csv" if ids_list else "WAEC_Class_Grades_Master.csv"
     return Response(
         content=csv_content,
         media_type="text/csv",
-        headers={"Content-Disposition": "attachment; filename=WAEC_Class_Grades_Master.csv"}
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
     )
 
 @router.get("/analytics", response_model=AnalyticsOverviewResponse)

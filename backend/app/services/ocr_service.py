@@ -21,11 +21,14 @@ try:
     # Check space-free tessdata locations first to avoid path truncation on Windows
     c_tessdata = Path(r"C:\tessdata")
     project_tessdata = Path(__file__).resolve().parent.parent.parent / "tessdata"
+    standard_tessdata = Path(r"C:\Program Files\Tesseract-OCR\tessdata")
     
     if c_tessdata.exists() and (c_tessdata / "eng.traineddata").exists():
         os.environ["TESSDATA_PREFIX"] = str(c_tessdata)
     elif project_tessdata.exists() and (project_tessdata / "eng.traineddata").exists():
         os.environ["TESSDATA_PREFIX"] = str(project_tessdata)
+    elif standard_tessdata.exists() and (standard_tessdata / "eng.traineddata").exists():
+        os.environ["TESSDATA_PREFIX"] = str(standard_tessdata)
 
     standard_tesseract_paths = [
         r"C:\Program Files\Tesseract-OCR\tesseract.exe",

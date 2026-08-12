@@ -10,7 +10,8 @@ import {
   FileDown, 
   Clock, 
   CheckCircle2, 
-  AlertCircle 
+  AlertCircle,
+  Trash2
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import { api } from '../services/api';
@@ -22,6 +23,7 @@ export const DashboardView: React.FC = () => {
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsOverview | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isClearing, setIsClearing] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -42,6 +44,31 @@ export const DashboardView: React.FC = () => {
     };
     loadData();
   }, []);
+
+  const handleClearEssays = async () => {
+    if (window.confirm('Are you sure you want to clear all recent essays?')) {
+      setIsClearing(true);
+      try {
+        await api.clearEssays();
+        setEssays([]);
+        addToast({
+          type: 'success',
+          title: 'Recent Essays Cleared',
+          message: 'All recent essays have been cleared.'
+        });
+        const updatedAnalytics = await api.getAnalytics();
+        setAnalytics(updatedAnalytics);
+      } catch (e: any) {
+        addToast({
+          type: 'error',
+          title: 'Clear Failed',
+          message: e.message || 'Failed to clear recent essays.'
+        });
+      } finally {
+        setIsClearing(false);
+      }
+    }
+  };
 
   return (
     <div className="space-y-8 animate-in fade-in pb-12">
@@ -201,13 +228,26 @@ export const DashboardView: React.FC = () => {
             <h3 className="font-bold text-gray-900 dark:text-white text-base font-['Outfit']">Recent Essays</h3>
             <p className="text-xs text-gray-500 dark:text-gray-400">Status of ingested and evaluated essays</p>
           </div>
-          <button
-            onClick={() => setView('ingest')}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#0077b6] hover:bg-[#005f93] text-white transition"
-          >
-            <Upload className="w-3.5 h-3.5" />
-            <span>Upload</span>
-          </button>
+          <div className="flex items-center gap-2">
+            {essays.length > 0 && (
+              <button
+                onClick={handleClearEssays}
+                disabled={isClearing}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-red-50 dark:bg-red-950/40 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/60 transition disabled:opacity-50"
+                title="Clear all recent essays"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{isClearing ? 'Clearing...' : 'Clear'}</span>
+              </button>
+            )}
+            <button
+              onClick={() => setView('ingest')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#0077b6] hover:bg-[#005f93] text-white transition"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span>Upload</span>
+            </button>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
