@@ -171,9 +171,17 @@ export const useAppStore = create<AppState>((set) => ({
     set({ currentTeacher: null, isTeacherAuthenticated: false, currentView: 'landing' });
   },
 
-  addToast: (toast) => set((state) => ({
-    toasts: [...state.toasts, { ...toast, id: `toast-${Date.now()}-${Math.random()}` }]
-  })),
+  addToast: (toast) => {
+    const id = `toast-${Date.now()}-${Math.random()}`;
+    set((state) => ({
+      toasts: [...state.toasts, { ...toast, id }]
+    }));
+    setTimeout(() => {
+      set((state) => ({
+        toasts: state.toasts.filter((t) => t.id !== id)
+      }));
+    }, 5000);
+  },
 
   removeToast: (id) => set((state) => ({
     toasts: state.toasts.filter((t) => t.id !== id)
