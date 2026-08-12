@@ -8,6 +8,7 @@ from typing import List, Optional
 from fastapi import APIRouter, HTTPException, Depends
 from app.models.schemas import RubricCreate, RubricResponse
 from app.database import get_db, log_audit
+from app.auth import verify_teacher_pin
 
 router = APIRouter(prefix="/api/v1/rubrics", tags=["Rubrics"])
 
@@ -34,7 +35,7 @@ def get_rubric(rubric_id: str):
             raise HTTPException(status_code=404, detail="Rubric not found.")
         return row
 
-@router.post("", response_model=RubricResponse)
+@router.post("", response_model=RubricResponse, dependencies=[Depends(verify_teacher_pin)])
 def create_rubric(payload: RubricCreate):
     """Create a new custom evaluation rubric."""
     rubric_id = f"rubric-{uuid.uuid4().hex[:8]}"
@@ -62,7 +63,7 @@ def create_rubric(payload: RubricCreate):
     log_audit("RUBRIC_CREATED", details=f"Created rubric: {payload.title}")
     return row
 
-@router.put("/{rubric_id}", response_model=RubricResponse)
+@router.put("/{rubric_id}", response_model=RubricResponse, dependencies=[Depends(verify_teacher_pin)])
 def update_rubric(rubric_id: str, payload: RubricCreate):
     """Update an existing rubric."""
     criteria_json = json.dumps([c.model_dump() for c in payload.criteria])
@@ -90,7 +91,7 @@ def update_rubric(rubric_id: str, payload: RubricCreate):
             raise HTTPException(status_code=404, detail="Rubric not found.")
         return row
 
-@router.delete("/{rubric_id}")
+@router.delete("/{rubric_id}", dependencies=[Depends(verify_teacher_pin)])
 def delete_rubric(rubric_id: str):
     """Delete a rubric if not referenced by existing essays."""
     with get_db() as conn:

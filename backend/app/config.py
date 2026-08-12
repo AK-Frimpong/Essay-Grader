@@ -48,8 +48,9 @@ WAEC_GRADE_SCALE = [
 
 def get_waec_grade(percentage: float) -> dict:
     """Resolve percentage score to Ghanaian WAEC letter grade."""
+    clamped_pct = max(0.0, min(100.0, float(percentage)))
     for grade_info in WAEC_GRADE_SCALE:
-        if grade_info["min_score"] <= percentage <= grade_info["max_score"]:
+        if grade_info["min_score"] <= clamped_pct <= grade_info["max_score"]:
             return grade_info
     return WAEC_GRADE_SCALE[-1]  # Default to F9
 

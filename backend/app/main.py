@@ -10,7 +10,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import UPLOADS_DIR, GENERATED_REPORTS_DIR, HOST, PORT, get_lan_ip
 from app.database import init_db
 from app.seed_data import seed_database
-from app.routers import rubrics, ingest, grade, review, export, license, lan
+from app.routers import rubrics, ingest, grade, review, export, license, lan, auth
 
 # Configure Logging
 logging.basicConfig(
@@ -56,6 +56,7 @@ app.mount("/api/v1/ingest/files", StaticFiles(directory=str(UPLOADS_DIR)), name=
 app.mount("/api/v1/export/reports", StaticFiles(directory=str(GENERATED_REPORTS_DIR)), name="reports")
 
 # Register API Routers
+app.include_router(auth.router)
 app.include_router(lan.router)
 app.include_router(rubrics.router)
 app.include_router(ingest.router)

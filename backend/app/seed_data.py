@@ -380,7 +380,18 @@ def seed_database():
             )
         )
 
-    logger.info("Database successfully seeded with standard rubrics, sample essays, grades, and offline license.")
+        # 4. Seed Default Teacher PIN (1234)
+        import hashlib
+        default_pin_hash = hashlib.sha256("1234".encode("utf-8")).hexdigest()
+        conn.execute(
+            """
+            INSERT OR IGNORE INTO system_settings (key, value)
+            VALUES ('teacher_pin_hash', ?)
+            """,
+            (default_pin_hash,)
+        )
+
+    logger.info("Database successfully seeded with standard rubrics, sample essays, grades, offline license, and default teacher PIN.")
 
 if __name__ == "__main__":
     from app.database import init_db

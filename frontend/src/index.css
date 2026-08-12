@@ -5,9 +5,8 @@
 @layer base {
   :root {
     color-scheme: light dark;
-    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    --color-primary: #0077b6;
-    --color-zinc-900: #18181b;
+    --font-sans: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
   *, ::after, ::before, ::backdrop {
@@ -25,17 +24,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   html.dark body {
-    background: radial-gradient(circle at 50% 0%, #172033 0%, #090d16 100%);
-    color: #f1f5f9;
+    background-color: #0f172a;
+    color: #f8fafc;
   }
 
   html:not(.dark) body {
     background-color: #f7f8fc;
-    color: #18181b;
+    color: #0f172a;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -43,18 +42,13 @@
   }
 }
 
-/* Custom Text Selection Highlight */
+/* Text Selection */
 ::selection {
   color: #0077b6;
-  background: rgba(0, 119, 182, 0.12);
+  background: #0077b61a;
 }
 
-body ::selection {
-  color: #0077b6;
-  background: rgba(0, 119, 182, 0.12);
-}
-
-/* Custom 5px Scrollbar */
+/* Scrollbars */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -65,7 +59,7 @@ body ::selection {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.15);
+  background: #0000001f;
   border-radius: 99px;
 }
 
@@ -74,22 +68,77 @@ html.dark ::-webkit-scrollbar-thumb {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 119, 182, 0.5);
+  background: rgba(0, 119, 182, 0.4);
 }
 
-/* Glassmorphism and Elevated Themed Cards */
+/* Crisp Light & Dark Card Panels with Ambient Glow */
 html.dark .glass-panel {
-  background: rgba(15, 23, 42, 0.80);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #1e293b;
+  border: 1px solid rgba(0, 119, 182, 0.4);
+  box-shadow: 0 0 14px -2px rgba(0, 119, 182, 0.25), 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+html.dark .glass-panel:hover {
+  border-color: rgba(0, 119, 182, 0.65);
+  box-shadow: 0 0 20px -1px rgba(0, 119, 182, 0.38), 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
 html:not(.dark) .glass-panel {
   background: #ffffff;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 119, 182, 0.25);
+  box-shadow: 0 0 12px -2px rgba(0, 119, 182, 0.12), 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+html:not(.dark) .glass-panel:hover {
+  border-color: rgba(0, 119, 182, 0.45);
+  box-shadow: 0 0 18px -1px rgba(0, 119, 182, 0.2), 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* High Contrast Mode */
+html.high-contrast body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.high-contrast .glass-panel {
+  background: #09090b !important;
+  border: 2px solid #38bdf8 !important;
+  box-shadow: 0 0 0 2px #000000, 0 0 15px rgba(56, 189, 248, 0.4) !important;
+}
+
+html.high-contrast button, html.high-contrast input, html.high-contrast select, html.high-contrast textarea {
+  border-width: 2px !important;
+}
+
+html.high-contrast *:focus-visible {
+  outline: 3px solid #38bdf8 !important;
+  outline-offset: 2px !important;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

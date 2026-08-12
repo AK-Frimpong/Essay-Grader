@@ -3,7 +3,7 @@ Offline License & Paystack Mobile Money Router
 Validates machine UUID signatures offline and processes online credit top-ups for low-connectivity environments.
 """
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from app.models.schemas import (
     HardwareSignatureResponse,
     LicenseStatusResponse,
@@ -11,6 +11,7 @@ from app.models.schemas import (
     MobileMoneyTopupRequest
 )
 from app.database import get_db, log_audit
+from app.auth import verify_teacher_pin
 from app.services.license_service import (
     get_machine_hardware_signature,
     get_current_license_status,
@@ -34,7 +35,7 @@ def get_license_status():
     status_info = get_current_license_status()
     return LicenseStatusResponse(**status_info)
 
-@router.post("/activate")
+@router.post("/activate", dependencies=[Depends(verify_teacher_pin)])
 def activate_offline_license(payload: LicenseActivationRequest):
     """Verify and install an RSA-2048 cryptographically signed license payload."""
     success, message = verify_and_apply_license_file(payload.license_payload_b64)
@@ -44,7 +45,7 @@ def activate_offline_license(payload: LicenseActivationRequest):
     log_audit("LICENSE_ACTIVATED", details=message)
     return {"success": True, "message": message, "status": get_current_license_status()}
 
-@router.post("/generate-test-license")
+@router.post("/generate-test-license", dependencies=[Depends(verify_teacher_pin)])
 def create_test_license(school_name: str = "Ghana Education Service Pilot Host", credits: int = 500):
     """Generate an authentic signed RSA test license string for demonstration and offline testing."""
     signed_b64 = generate_sample_school_license(school_name, credits)
@@ -55,7 +56,7 @@ def create_test_license(school_name: str = "Ghana Education Service Pilot Host",
         "instructions": "Copy this signed payload or upload it into the Offline License Manager modal."
     }
 
-@router.post("/momo-topup")
+@router.post("/momo-topup", dependencies=[Depends(verify_teacher_pin)])
 def topup_via_paystack_momo(payload: MobileMoneyTopupRequest):
     """
     Process Ghana Mobile Money top-up (MTN MoMo / Telecel / AT Money) via Paystack.

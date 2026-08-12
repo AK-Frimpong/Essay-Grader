@@ -11,76 +11,156 @@ import {
 
 // Dynamically resolve backend host using browser origin hostname to support school LAN Wi-Fi access
 export const getBaseApiUrl = (): string => {
-  const customHost = localStorage.getItem('custom_backend_host');
+  const customHost = typeof localStorage !== 'undefined' ? localStorage.getItem('custom_backend_host') : null;
   if (customHost) return customHost;
   
-  const hostname = window.location.hostname || 'localhost';
+  const hostname = typeof window !== 'undefined' && window.location ? window.location.hostname || 'localhost' : 'localhost';
   return `http://${hostname}:8000/api/v1`;
 };
 
+// Helper to get request headers with optional Teacher Security PIN (X-Teacher-PIN)
+const getHeaders = (includeJsonContentType = true): Record<string, string> => {
+  const headers: Record<string, string> = {};
+  if (includeJsonContentType) {
+    headers['Content-Type'] = 'application/json';
+  }
+  const teacherPin = typeof localStorage !== 'undefined' ? localStorage.getItem('teacher_pin') : null;
+  if (teacherPin) {
+    headers['X-Teacher-PIN'] = teacherPin;
+  }
+  return headers;
+};
+
+// Helper to extract clean error message from API response or network exception
+const parseApiError = (errData: any, defaultMsg: string): string => {
+  if (!errData) return defaultMsg;
+  if (typeof errData === 'string') return errData;
+  if (typeof errData.detail === 'string') return errData.detail;
+  if (Array.isArray(errData.detail)) {
+    return errData.detail
+      .map((item: any) => (item.msg ? `${item.loc ? item.loc.filter((l: any) => l !== 'body').join('.') + ': ' : ''}${item.msg}` : JSON.stringify(item)))
+      .join('; ');
+  }
+  if (typeof errData.message === 'string') return errData.message;
+  return defaultMsg;
+};
+
+const handleFetch = async (url: string, options?: RequestInit, defaultErrMsg = 'API request failed'): Promise<Response> => {
+  try {
+    const res = await fetch(url, options);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({ detail: defaultErrMsg }));
+      const msg = parseApiError(errData, defaultErrMsg);
+      throw new Error(msg);
+    }
+    return res;
+  } catch (err: any) {
+    if (err.name === 'TypeError' && err.message?.includes('Failed to fetch')) {
+      const baseUrl = getBaseApiUrl();
+      throw new Error(`Unable to connect to server at ${baseUrl}. Please ensure the Python backend server is running on port 8000.`);
+    }
+    throw err;
+  }
+};
+
 export const api = {
+  // Authentication & Security PIN
+  verifyPin: async (pin: string): Promise<{ valid: boolean; role: string; message: string }> => {
+    const res = await handleFetch(`${getBaseApiUrl()}/auth/verify-pin`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    }, 'PIN verification failed');
+    return res.json();
+  },
+
+  changePin: async (currentPin: string, newPin: string): Promise<{ success: boolean; message: string }> => {
+    const res = await handleFetch(`${getBaseApiUrl()}/auth/change-pin`, {
+      method: 'POST',
+      headers: getHeaders(true),
+      body: JSON.stringify({ current_pin: currentPin, new_pin: newPin })
+    }, 'Failed to update PIN');
+    return res.json();
+  },
+
   // LAN & Host Info
   getLanStatus: async (): Promise<LANStatus> => {
-    const res = await fetch(`${getBaseApiUrl()}/lan/status`);
-    if (!res.ok) throw new Error('Failed to reach LAN server status');
+    const res = await handleFetch(`${getBaseApiUrl()}/lan/status`, undefined, 'Failed to reach LAN server status');
     return res.json();
   },
 
   // Rubrics
   getRubrics: async (subject?: string): Promise<Rubric[]> => {
     const url = subject ? `${getBaseApiUrl()}/rubrics?subject=${encodeURIComponent(subject)}` : `${getBaseApiUrl()}/rubrics`;
-    const res = await fetch(url);
-    if (!res.ok) throw new Error('Failed to fetch rubrics');
+    const res = await handleFetch(url, undefined, 'Failed to fetch rubrics');
     return res.json();
   },
 
   getRubric: async (id: string): Promise<Rubric> => {
-    const res = await fetch(`${getBaseApiUrl()}/rubrics/${id}`);
-    if (!res.ok) throw new Error('Failed to fetch rubric details');
+    const res = await handleFetch(`${getBaseApiUrl()}/rubrics/${id}`, undefined, 'Failed to fetch rubric details');
     return res.json();
   },
 
   createRubric: async (rubric: Partial<Rubric>): Promise<Rubric> => {
-    const res = await fetch(`${getBaseApiUrl()}/rubrics`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/rubrics`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify(rubric)
-    });
-    if (!res.ok) throw new Error('Failed to create rubric');
+    }, 'Failed to create rubric');
     return res.json();
   },
 
   updateRubric: async (id: string, rubric: Partial<Rubric>): Promise<Rubric> => {
-    const res = await fetch(`${getBaseApiUrl()}/rubrics/${id}`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/rubrics/${id}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify(rubric)
-    });
-    if (!res.ok) throw new Error('Failed to update rubric');
+    }, 'Failed to update rubric');
     return res.json();
   },
 
   deleteRubric: async (id: string): Promise<{ message: string }> => {
-    const res = await fetch(`${getBaseApiUrl()}/rubrics/${id}`, {
-      method: 'DELETE'
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Delete failed' }));
-      throw new Error(err.detail || 'Failed to delete rubric');
-    }
+    const res = await handleFetch(`${getBaseApiUrl()}/rubrics/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(false)
+    }, 'Failed to delete rubric');
     return res.json();
   },
 
   // Ingestion & OCR
   uploadDocument: async (formData: FormData): Promise<any> => {
-    const res = await fetch(`${getBaseApiUrl()}/ingest/upload`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/upload`, {
       method: 'POST',
+      headers: getHeaders(false),
       body: formData
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Upload failed' }));
-      throw new Error(err.detail || 'Failed to upload document');
-    }
+    }, 'Failed to upload document for OCR extraction');
+    return res.json();
+  },
+
+  batchUploadDocuments: async (formData: FormData): Promise<{
+    total_processed: number;
+    total_graded: number;
+    results: Array<{
+      essay_id: string;
+      original_filename: string;
+      student_name: string;
+      student_id: string;
+      file_type: string;
+      word_count: number;
+      status: string;
+      evaluation?: {
+        overall_score: number;
+        max_score: number;
+        percentage: number;
+        letter_grade: string;
+      };
+    }>;
+  }> => {
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/batch`, {
+      method: 'POST',
+      headers: getHeaders(false),
+      body: formData
+    }, 'Failed batch document ingestion');
     return res.json();
   },
 
@@ -92,12 +172,11 @@ export const api = {
     student_id?: string;
     rubric_id?: string;
   }): Promise<any> => {
-    const res = await fetch(`${getBaseApiUrl()}/ingest/correct-text`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/correct-text`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error('Failed to save corrected text');
+    }, 'Failed to save corrected text');
     return res.json();
   },
 
@@ -106,36 +185,30 @@ export const api = {
     if (status) params.append('status', status);
     if (search) params.append('search', search);
     
-    const res = await fetch(`${getBaseApiUrl()}/ingest/essays?${params.toString()}`);
-    if (!res.ok) throw new Error('Failed to list essays');
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/essays?${params.toString()}`, undefined, 'Failed to list essays');
     return res.json();
   },
 
   getEssayDetails: async (id: string): Promise<{ essay: Essay; grade?: Grade }> => {
-    const res = await fetch(`${getBaseApiUrl()}/ingest/essays/${id}`);
-    if (!res.ok) throw new Error('Failed to fetch essay details');
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/essays/${id}`, undefined, 'Failed to fetch essay details');
     return res.json();
   },
 
   deleteEssay: async (id: string): Promise<{ message: string }> => {
-    const res = await fetch(`${getBaseApiUrl()}/ingest/essays/${id}`, {
-      method: 'DELETE'
-    });
-    if (!res.ok) throw new Error('Failed to delete essay');
+    const res = await handleFetch(`${getBaseApiUrl()}/ingest/essays/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(false)
+    }, 'Failed to delete essay');
     return res.json();
   },
 
   // AI Evaluation
   evaluateEssay: async (essay_id: string, rubric_id?: string): Promise<any> => {
-    const res = await fetch(`${getBaseApiUrl()}/grade/evaluate`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/grade/evaluate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify({ essay_id, rubric_id })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Grading failed' }));
-      throw new Error(err.detail || 'Failed to grade essay');
-    }
+    }, 'Failed to evaluate essay with AI engine');
     return res.json();
   },
 
@@ -145,8 +218,7 @@ export const api = {
     grade?: Grade;
     audit_history: any[];
   }> => {
-    const res = await fetch(`${getBaseApiUrl()}/review/${essay_id}`);
-    if (!res.ok) throw new Error('Failed to load review workspace');
+    const res = await handleFetch(`${getBaseApiUrl()}/review/${essay_id}`, undefined, 'Failed to load review workspace');
     return res.json();
   },
 
@@ -158,19 +230,17 @@ export const api = {
     approved_by?: string;
     lock_grade: boolean;
   }): Promise<Grade> => {
-    const res = await fetch(`${getBaseApiUrl()}/review/submit`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/review/submit`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error('Failed to submit teacher review');
+    }, 'Failed to submit teacher review');
     return res.json();
   },
 
   // Analytics & Exports
   getAnalytics: async (): Promise<AnalyticsOverview> => {
-    const res = await fetch(`${getBaseApiUrl()}/export/analytics`);
-    if (!res.ok) throw new Error('Failed to fetch analytics');
+    const res = await handleFetch(`${getBaseApiUrl()}/export/analytics`, undefined, 'Failed to fetch analytics');
     return res.json();
   },
 
@@ -190,37 +260,30 @@ export const api = {
 
   // Licensing & MoMo Top-Up
   getHardwareSignature: async (): Promise<HardwareSignature> => {
-    const res = await fetch(`${getBaseApiUrl()}/license/hardware-signature`);
-    if (!res.ok) throw new Error('Failed to retrieve machine signature');
+    const res = await handleFetch(`${getBaseApiUrl()}/license/hardware-signature`, undefined, 'Failed to retrieve machine signature');
     return res.json();
   },
 
   getLicenseStatus: async (): Promise<LicenseStatus> => {
-    const res = await fetch(`${getBaseApiUrl()}/license/status`);
-    if (!res.ok) throw new Error('Failed to fetch license status');
+    const res = await handleFetch(`${getBaseApiUrl()}/license/status`, undefined, 'Failed to fetch license status');
     return res.json();
   },
 
   activateLicense: async (license_payload_b64: string): Promise<any> => {
-    const res = await fetch(`${getBaseApiUrl()}/license/activate`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/license/activate`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify({ license_payload_b64 })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ detail: 'Activation failed' }));
-      throw new Error(err.detail || 'License activation failed');
-    }
+    }, 'License activation failed');
     return res.json();
   },
 
   generateTestLicense: async (school_name?: string, credits?: number): Promise<any> => {
-    const res = await fetch(`${getBaseApiUrl()}/license/generate-test-license`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/license/generate-test-license`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify({ school_name: school_name || "Achimota School JHS", credits: credits || 500 })
-    });
-    if (!res.ok) throw new Error('Failed to generate test license');
+    }, 'Failed to generate test license');
     return res.json();
   },
 
@@ -230,12 +293,12 @@ export const api = {
     amount_ghs: number;
     credits_requested: number;
   }): Promise<any> => {
-    const res = await fetch(`${getBaseApiUrl()}/license/momo-topup`, {
+    const res = await handleFetch(`${getBaseApiUrl()}/license/momo-topup`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getHeaders(true),
       body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error('MoMo transaction failed');
+    }, 'MoMo transaction failed');
     return res.json();
   }
 };
+

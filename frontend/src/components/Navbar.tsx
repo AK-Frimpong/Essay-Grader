@@ -5,16 +5,13 @@ import {
   CheckSquare, 
   BarChart3, 
   Layers, 
-  Wifi, 
-  WifiOff, 
-  KeyRound, 
-  QrCode, 
   Coins, 
-  Sparkles,
   GraduationCap,
-  Award,
   Sun,
-  Moon
+  Moon,
+  Lock,
+  Unlock,
+  PanelRight
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 
@@ -25,49 +22,42 @@ export const Navbar: React.FC = () => {
     currentView, 
     setView, 
     licenseStatus, 
-    lanStatus, 
-    isOfflineMode, 
-    toggleOfflineMode,
+    isTeacherAuthenticated,
+    currentTeacher,
+    setAuthModalOpen,
     setLicenseModalOpen,
-    setQrModalOpen 
+    setRightSidebarOpen
   } = useAppStore();
 
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Layers },
-    { id: 'rubrics', label: 'Rubrics & Standards', icon: BookOpen },
-    { id: 'ingest', label: 'Ingest & OCR Workspace', icon: FileText },
-    { id: 'review', label: 'Teacher Review Panel', icon: CheckSquare },
-    { id: 'analytics', label: 'Analytics & Export', icon: BarChart3 },
+    { id: 'rubrics', label: 'Rubrics', icon: BookOpen },
+    { id: 'ingest', label: 'Upload & OCR', icon: FileText },
+    { id: 'review', label: 'Review', icon: CheckSquare },
+    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-gh-slate-900/90 backdrop-blur-md transition-colors">
+    <header className="sticky top-0 z-40 w-full border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
           
-          {/* Logo & School Header */}
-          <div className="flex items-center gap-3.5 cursor-pointer group" onClick={() => setView('dashboard')}>
-            <div className="relative w-10 h-10 rounded-xl bg-gradient-to-tr from-[#0077b6] via-emerald-600 to-amber-500 p-0.5 shadow-glow-blue dark:shadow-glow-emerald transition-transform group-hover:scale-105 flex items-center justify-center">
-              <div className="w-full h-full bg-white dark:bg-gh-slate-900 rounded-[10px] flex items-center justify-center relative overflow-hidden">
-                <GraduationCap className="w-5 h-5 text-[#0077b6] dark:text-gh-emerald-400 transition-colors" />
-                <Award className="w-2.5 h-2.5 text-amber-500 absolute top-1 right-1" />
-              </div>
+          {/* Logo & App Name (Matching PROSBEE Brand Style) */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer group select-none"
+            onClick={() => setRightSidebarOpen(true, 'chat')}
+            title="Open workspace navigation"
+          >
+            <div className="w-9 h-9 rounded-xl bg-[#0070f3] flex items-center justify-center shadow-[0_4px_14px_0_rgba(0,112,243,0.39)] group-hover:scale-105 group-hover:shadow-[0_6px_20px_0_rgba(0,112,243,0.5)] transition-all duration-200">
+              <GraduationCap className="w-5 h-5 text-white" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-base tracking-tight text-slate-900 dark:text-white font-['Outfit'] group-hover:text-[#0077b6] dark:group-hover:text-gh-emerald-300 transition-colors">
-                  OFFLINE ESSAY GRADER
-                </span>
-                <span className="px-1.5 py-0.5 text-[10px] font-bold rounded bg-sky-100 dark:bg-gh-emerald-900/80 text-[#0077b6] dark:text-gh-emerald-300 border border-sky-200 dark:border-gh-emerald-600/40">
-                  GH-LAN v1.0
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Ghana Education Service • Local AI Node</p>
-            </div>
+            <span className="font-extrabold text-base md:text-lg text-slate-900 dark:text-white uppercase tracking-wider font-['Outfit'] group-hover:text-[#0070f3] dark:group-hover:text-sky-400 transition-colors">
+              ESSAY GRADER
+            </span>
           </div>
 
           {/* Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-1">
+          <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = currentView === item.id;
@@ -75,88 +65,61 @@ export const Navbar: React.FC = () => {
                 <button
                   key={item.id}
                   onClick={() => setView(item.id as any)}
-                  className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-sm transition-all duration-200 ${
                     isActive
-                      ? 'bg-sky-50 dark:bg-gh-emerald-600/20 text-[#0077b6] dark:text-gh-emerald-300 border border-sky-200 dark:border-gh-emerald-500/30 shadow-sm font-semibold'
-                      : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
+                      ? 'bg-[#e0f2fe] dark:bg-[#0070f3]/25 text-[#0070f3] dark:text-sky-300 font-bold shadow-[0_0_12px_rgba(0,112,243,0.25)] ring-1 ring-[#0070f3]/30'
+                      : 'text-slate-600 dark:text-slate-400 font-medium hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/60'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#0077b6] dark:text-gh-emerald-400' : 'text-slate-400'}`} />
-                  {item.label}
+                  <Icon className={`w-4 h-4 ${isActive ? 'text-[#0070f3] dark:text-sky-300' : ''}`} />
+                  <span>{item.label}</span>
                 </button>
               );
             })}
           </nav>
 
-          {/* Right Action Widgets: LAN Host IP, Credits, License */}
-          <div className="flex items-center gap-2.5">
+          {/* Right Actions */}
+          <div className="flex items-center gap-2">
             
-            {/* LAN Host Badge with QR trigger */}
-            <button
-              onClick={() => setQrModalOpen(true)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800/80 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700/80 hover:bg-slate-200 dark:hover:bg-slate-700/80 transition"
-              title="Click to view QR code for mobile connection on school Wi-Fi"
-            >
-              <QrCode className="w-3.5 h-3.5 text-amber-600 dark:text-gh-gold-400" />
-              <span className="hidden sm:inline text-slate-500 dark:text-slate-400">LAN:</span>
-              <span className="text-[#0077b6] dark:text-gh-emerald-400 font-mono font-bold">{lanStatus?.host_ip || '192.168.1.105'}:8000</span>
-            </button>
-
-            {/* Offline Credits Badge */}
-            <button
-              onClick={() => setLicenseModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-50 dark:bg-gh-gold-950/60 text-amber-800 dark:text-gh-gold-300 border border-amber-200 dark:border-gh-gold-500/40 hover:bg-amber-100 dark:hover:bg-gh-gold-900/60 transition shadow-sm"
-              title="Remaining offline evaluation credits & licensing"
-            >
-              <Coins className="w-3.5 h-3.5 text-amber-600 dark:text-gh-gold-400" />
-              <span>{licenseStatus?.remaining_credits ?? 498}</span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:inline">Credits</span>
-            </button>
-
-            {/* Theme Toggle Button (Light / Dark Mode) */}
+            {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-slate-300 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition"
-              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
+              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              title={`Theme: ${theme}`}
             >
-              {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-slate-700" />
-              )}
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
-            {/* Offline Mode Indicator */}
-            <button
-              onClick={toggleOfflineMode}
-              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium border transition ${
-                isOfflineMode
-                  ? 'bg-emerald-50 dark:bg-gh-emerald-950/70 text-gh-emerald-700 dark:text-gh-emerald-400 border-gh-emerald-300 dark:border-gh-emerald-700/50'
-                  : 'bg-blue-50 dark:bg-blue-950/70 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700/50'
-              }`}
-              title="Toggle LAN-only offline mode vs online top-up mode"
-            >
-              {isOfflineMode ? (
-                <>
-                  <WifiOff className="w-3.5 h-3.5 text-gh-emerald-600 dark:text-gh-emerald-400" />
-                  <span className="hidden sm:inline">Offline LAN</span>
-                </>
-              ) : (
-                <>
-                  <Wifi className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                  <span className="hidden sm:inline">WAN Mode</span>
-                </>
-              )}
-            </button>
-
-            {/* License Management Button */}
+            {/* Credits */}
             <button
               onClick={() => setLicenseModalOpen(true)}
-              className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 transition"
-              title="Offline RSA License & Hardware Signature"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700/40 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition"
+              title="Remaining grading credits"
             >
-              <KeyRound className="w-4 h-4" />
+              <Coins className="w-3.5 h-3.5" />
+              <span>{licenseStatus?.remaining_credits ?? 498}</span>
             </button>
+
+            {/* Active Teacher Profile Badge */}
+            <button
+              onClick={() => setAuthModalOpen(true, 'login')}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-primary-50 dark:bg-primary-900/30 text-[#0070f3] dark:text-sky-300 border border-[#0070f3]/30 hover:bg-[#e0f2fe] transition"
+              title="Switch teacher profile or register"
+            >
+              <Unlock className="w-3.5 h-3.5 text-emerald-500" />
+              <span className="max-w-[120px] truncate">{currentTeacher?.name || 'Teacher Profile'}</span>
+            </button>
+
+            {/* Sidebar Trigger */}
+            <button
+              onClick={() => setRightSidebarOpen(true, 'nav')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#0070f3] hover:bg-[#005f93] text-white transition shadow-sm"
+              title="Open workspace navigation"
+            >
+              <PanelRight className="w-4 h-4" />
+              <span className="hidden sm:inline">Menu</span>
+            </button>
+
           </div>
 
         </div>

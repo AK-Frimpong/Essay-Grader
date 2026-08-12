@@ -5,11 +5,12 @@ Provides split-screen evaluation pane, score override sliders, comment editors, 
 import uuid
 import json
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from app.models.schemas import TeacherReviewSubmit, GradeResponse
 from app.database import get_db, log_audit
 from app.config import get_waec_grade
 from app.services.pdf_service import generate_student_pdf_report
+from app.auth import verify_teacher_pin
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/review", tags=["Teacher Review & Approval"])
@@ -47,7 +48,7 @@ def get_review_workspace_data(essay_id: str):
         "audit_history": audit_history
     }
 
-@router.post("/submit", response_model=GradeResponse)
+@router.post("/submit", response_model=GradeResponse, dependencies=[Depends(verify_teacher_pin)])
 def submit_teacher_review(payload: TeacherReviewSubmit):
     """
     Save teacher score overrides, qualitative feedback, and optionally lock grade with PDF generation.

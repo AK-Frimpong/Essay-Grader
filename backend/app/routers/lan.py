@@ -11,6 +11,8 @@ from fastapi import APIRouter
 from app.models.schemas import LANStatusResponse
 from app.config import get_lan_ip, PORT, FRONTEND_PORT, OLLAMA_HOST, OLLAMA_MODEL
 
+from app.services.ocr_service import check_tesseract_status
+
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/lan", tags=["LAN Host Status"])
 
@@ -33,7 +35,7 @@ def _generate_qr_base64(url: str) -> str:
 @router.get("/status", response_model=LANStatusResponse)
 def get_lan_status():
     """
-    Retrieve LAN host status, detected IP, and pairing QR code.
+    Retrieve LAN host status, detected IP, pairing QR code, and AI/OCR diagnostics.
     Enables classroom mobile devices to connect over school Wi-Fi.
     """
     lan_ip = get_lan_ip()
@@ -41,11 +43,27 @@ def get_lan_status():
     frontend_url = f"http://{lan_ip}:{FRONTEND_PORT}"
     qr_b64 = _generate_qr_base64(frontend_url)
 
-    # Check local Ollama connectivity
+    # 1. Check Tesseract OCR Binary Status
+    tesseract_ok, tesseract_msg = check_tesseract_status()
+
+    # 2. Check local Ollama connectivity and installed models
     ollama_ok = False
+    model_installed = False
+    installed_models = []
+
     try:
         res = requests.get(f"{OLLAMA_HOST.rstrip('/')}/api/tags", timeout=1.5)
-        ollama_ok = res.status_code == 200
+        if res.status_code == 200:
+            ollama_ok = True
+            data = res.json()
+            models_list = data.get("models", [])
+            installed_models = [m.get("name") for m in models_list if m.get("name")]
+            # Check if OLLAMA_MODEL or model family prefix matches any installed model
+            target = OLLAMA_MODEL.lower()
+            model_installed = any(
+                target in m.lower() or m.lower() in target or target.split(":")[0] in m.lower()
+                for m in installed_models
+            )
     except Exception:
         ollama_ok = False
 
@@ -58,5 +76,9 @@ def get_lan_status():
         is_online=True,
         client_count_estimate=3, # Active local peers on LAN subnet
         ollama_connected=ollama_ok,
-        active_model=OLLAMA_MODEL if ollama_ok else "Offline Heuristic Fallback Engine"
+        active_model=OLLAMA_MODEL if ollama_ok else "Offline Heuristic Fallback Engine",
+        tesseract_installed=tesseract_ok,
+        tesseract_message=tesseract_msg,
+        ollama_model_installed=model_installed,
+        ollama_installed_models=installed_models
     )

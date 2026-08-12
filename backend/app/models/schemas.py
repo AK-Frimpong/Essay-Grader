@@ -179,6 +179,10 @@ class LANStatusResponse(BaseModel):
     client_count_estimate: int
     ollama_connected: bool
     active_model: str
+    tesseract_installed: bool = True
+    tesseract_message: str = "Tesseract OCR active"
+    ollama_model_installed: bool = True
+    ollama_installed_models: List[str] = []
 
 class AnalyticsOverviewResponse(BaseModel):
     total_essays: int

@@ -36,6 +36,7 @@ export interface Essay {
   grade_level: string;
   rubric_id: string;
   rubric_title?: string;
+  rubric_total_points?: number;
   original_filename?: string;
   file_type: 'IMAGE' | 'PDF' | 'DOCX' | 'TXT';
   file_path?: string;
@@ -126,6 +127,10 @@ export interface LANStatus {
   client_count_estimate: number;
   ollama_connected: boolean;
   active_model: string;
+  tesseract_installed?: boolean;
+  tesseract_message?: string;
+  ollama_model_installed?: boolean;
+  ollama_installed_models?: string[];
 }
 
 export interface AnalyticsOverview {

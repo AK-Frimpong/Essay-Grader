@@ -105,22 +105,29 @@ export const LicenseModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="license-modal-title"
+      aria-describedby="license-modal-desc"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in"
+    >
       <div className="glass-panel relative w-full max-w-2xl bg-white dark:bg-gh-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-emerald-50 via-slate-50 to-amber-50 dark:from-gh-slate-950 dark:via-gh-slate-900 dark:to-gh-emerald-950">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-gh-emerald-900/50 border border-emerald-300 dark:border-gh-emerald-600/40 text-emerald-700 dark:text-gh-emerald-400">
+            <div className="p-2.5 rounded-xl bg-emerald-100 dark:bg-slate-800 border border-emerald-200 dark:border-slate-700 text-emerald-700 dark:text-emerald-300">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">Offline RSA Licensing & Credit Ledger</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Hardware UUID Binding & Paystack Ghana Mobile Money</p>
+              <h3 id="license-modal-title" className="font-bold text-slate-900 dark:text-white text-base">Offline RSA Licensing & Credit Ledger</h3>
+              <p id="license-modal-desc" className="text-xs text-slate-500 dark:text-slate-400">Hardware UUID Binding & Paystack Ghana Mobile Money</p>
             </div>
           </div>
           <button
             onClick={() => setLicenseModalOpen(false)}
+            aria-label="Close licensing modal"
             className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />
@@ -317,7 +324,7 @@ export const LicenseModal: React.FC = () => {
         <div className="px-6 py-3 bg-slate-50 dark:bg-slate-950/70 border-t border-slate-200 dark:border-slate-800 flex justify-end">
           <button
             onClick={() => setLicenseModalOpen(false)}
-            className="px-5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition"
+            className="px-5 py-2 rounded-xl text-xs font-semibold bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/40 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-800/60 transition"
           >
             Close
           </button>

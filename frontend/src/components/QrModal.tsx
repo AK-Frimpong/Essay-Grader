@@ -22,22 +22,29 @@ export const QrModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="qr-modal-title"
+      aria-describedby="qr-modal-desc"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in"
+    >
       <div className="glass-panel relative w-full max-w-md bg-white dark:bg-gh-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-r from-emerald-50 via-slate-50 to-amber-50 dark:from-gh-emerald-950/60 dark:to-gh-slate-900">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-gh-emerald-900/60 border border-emerald-300 dark:border-gh-emerald-600/40 text-emerald-700 dark:text-gh-emerald-400">
+            <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/50 text-emerald-700 dark:text-emerald-300">
               <QrIcon className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900 dark:text-white text-base">Classroom Mobile Pairing</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Connect phones & tablets over School Wi-Fi</p>
+              <h3 id="qr-modal-title" className="font-bold text-slate-900 dark:text-white text-base">Classroom Mobile Pairing</h3>
+              <p id="qr-modal-desc" className="text-xs text-slate-500 dark:text-slate-400">Connect phones & tablets over School Wi-Fi</p>
             </div>
           </div>
           <button
             onClick={() => setQrModalOpen(false)}
+            aria-label="Close mobile pairing modal"
             className="p-1 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
           >
             <X className="w-5 h-5" />

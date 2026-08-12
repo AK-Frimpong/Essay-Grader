@@ -114,6 +114,13 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     FOREIGN KEY (essay_id) REFERENCES essays(id) ON DELETE SET NULL
 );
 
+-- 7. System Settings Table (PIN & Security Config)
+CREATE TABLE IF NOT EXISTS system_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for lightning fast queries over LAN
 CREATE INDEX IF NOT EXISTS idx_essays_status ON essays(status);
 CREATE INDEX IF NOT EXISTS idx_essays_student ON essays(student_id);

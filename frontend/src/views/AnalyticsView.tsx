@@ -66,32 +66,32 @@ export const AnalyticsView: React.FC = () => {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-gh-emerald-400" />
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white font-['Outfit']">
-              Class Analytics & Examination Export
+            <BarChart3 className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-['Outfit']">
+              Analytics & Export
             </h1>
           </div>
-          <p className="text-slate-400 text-xs md:text-sm mt-1">
-            WAEC letter grade distribution, criterion mastery metrics, and official ReportLab PDF batch generation.
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
+            Grade distribution, criterion mastery, and report card generation.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <a
             href={api.getBulkPdfUrl()}
-            download="Ghanaian_Class_Report_Cards.zip"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gh-emerald-600 hover:bg-gh-emerald-500 text-white transition shadow-glow-emerald"
+            download="Class_Report_Cards.zip"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-[#0077b6] hover:bg-[#005f93] text-white transition shadow-sm"
           >
             <Download className="w-4 h-4" />
-            <span>Download All Report Cards (ZIP)</span>
+            <span>Download All Report Cards</span>
           </a>
           <a
             href={api.getCsvExportUrl()}
-            download="WAEC_Class_Master_Grades.csv"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+            download="Class_Master_Grades.csv"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 transition"
           >
-            <FileDown className="w-4 h-4 text-blue-400" />
-            <span>Export CSV Grade Sheet</span>
+            <FileDown className="w-4 h-4 text-primary-600 dark:text-primary-400" />
+            <span>Export CSV</span>
           </a>
         </div>
       </div>
@@ -100,24 +100,24 @@ export const AnalyticsView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* WAEC Letter Grade Histogram */}
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+        <div className="glass-panel p-6 rounded-xl space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-white text-sm uppercase tracking-wider">
-              WAEC Grade Distribution (A1 - F9)
+            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">
+              WAEC Grade Distribution
             </h3>
-            <span className="text-xs text-slate-400 font-mono">
-              Total Evaluated: <strong className="text-gh-emerald-400">{essays.length}</strong>
+            <span className="text-xs text-gray-500 dark:text-gray-400 font-mono">
+              Total: <strong className="text-primary-600 dark:text-primary-400">{essays.length}</strong>
             </span>
           </div>
 
           <div className="h-64 w-full pt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={gradeChartData}>
-                <XAxis dataKey="grade" stroke="#64748b" fontSize={11} />
-                <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} />
+                <XAxis dataKey="grade" stroke="#9ca3af" fontSize={11} />
+                <YAxis stroke="#9ca3af" fontSize={11} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderColor: '#334155', borderRadius: '12px' }}
-                  itemStyle={{ color: '#34d399', fontWeight: 'bold' }}
+                  contentStyle={{ backgroundColor: '#1f2937', borderColor: '#374151', borderRadius: '8px' }}
+                  itemStyle={{ color: '#60a5fa', fontWeight: 'bold' }}
                 />
                 <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                   {gradeChartData.map((entry, index) => (
@@ -130,90 +130,93 @@ export const AnalyticsView: React.FC = () => {
         </div>
 
         {/* Criteria Mastery Progress Bars */}
-        <div className="glass-panel p-6 rounded-2xl border border-slate-800 space-y-4 shadow-xl">
+        <div className="glass-panel p-6 rounded-xl space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-white text-sm uppercase tracking-wider">
-              Curricular Criterion Mastery
+            <h3 className="font-semibold text-gray-900 dark:text-white text-sm">
+              Criterion Mastery
             </h3>
-            <span className="text-xs text-gh-gold-400 font-semibold">
+            <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">
               Class Average: 88.0%
             </span>
           </div>
 
           <div className="space-y-4 pt-2">
-            {criteriaData.map((item, idx) => (
-              <div key={idx} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-medium text-slate-200">{item.criterion}</span>
-                  <span className="font-mono font-bold text-gh-emerald-400">{item.mastery_pct}%</span>
+            {criteriaData.map((item, idx) => {
+              const pct = typeof item.mastery_pct === 'number' ? item.mastery_pct : parseFloat(item.mastery_pct as any) || 0;
+              return (
+                <div key={idx} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium text-gray-700 dark:text-gray-200">{item.criterion}</span>
+                    <span className="font-mono font-semibold text-[#0077b6] dark:text-primary-400">{pct}%</span>
+                  </div>
+                  <div className="w-full h-2.5 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-[#0077b6] transition-all duration-500"
+                      style={{ width: `${Math.min(100, Math.max(0, pct))}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="w-full h-2.5 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-gh-emerald-600 to-gh-gold-500"
-                    style={{ width: `${item.mastery_pct}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
       </div>
 
       {/* Student Performance Roster Table */}
-      <div className="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-        <div className="px-6 py-4 border-b border-slate-800 bg-slate-950/40 flex items-center justify-between">
+      <div className="glass-panel rounded-xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
           <div>
-            <h3 className="font-bold text-white text-base font-['Outfit']">Class Performance Roster</h3>
-            <p className="text-xs text-slate-400">Download individual ReportLab PDF report cards</p>
+            <h3 className="font-bold text-gray-900 dark:text-white text-base font-['Outfit']">Class Performance</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400">Download individual PDF report cards</p>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950/70 text-slate-400 uppercase text-[10px] tracking-wider border-b border-slate-800">
+          <table className="w-full text-left text-sm" aria-label="Class Performance Roster Table">
+            <thead className="bg-gray-50 dark:bg-gray-800/30 text-gray-500 dark:text-gray-400 text-xs uppercase tracking-wider border-b border-gray-200 dark:border-gray-700">
               <tr>
-                <th className="py-3 px-4">Index / Student</th>
-                <th className="py-3 px-4">Essay Topic</th>
-                <th className="py-3 px-4">Subject</th>
-                <th className="py-3 px-4">WAEC Grade</th>
-                <th className="py-3 px-4">Score (%)</th>
-                <th className="py-3 px-4">Status</th>
-                <th className="py-3 px-4 text-right">Report Card</th>
+                <th scope="col" className="py-3 px-4">Student</th>
+                <th scope="col" className="py-3 px-4">Essay Topic</th>
+                <th scope="col" className="py-3 px-4">Subject</th>
+                <th scope="col" className="py-3 px-4">Grade</th>
+                <th scope="col" className="py-3 px-4">Score</th>
+                <th scope="col" className="py-3 px-4">Status</th>
+                <th scope="col" className="py-3 px-4 text-right">Report</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60 text-slate-300">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-800 text-gray-700 dark:text-gray-300">
               {essays.map((essay) => (
-                <tr key={essay.id} className="hover:bg-slate-800/40 transition">
-                  <td className="py-3.5 px-4">
-                    <div className="font-bold text-white">{essay.student_name}</div>
-                    <div className="text-[10px] text-slate-400 font-mono">{essay.student_id}</div>
+                <tr key={essay.id} className="hover:bg-gray-50 dark:hover:bg-gray-800/40 transition">
+                  <td className="py-3 px-4">
+                    <div className="font-medium text-gray-900 dark:text-white">{essay.student_name}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 font-mono">{essay.student_id}</div>
                   </td>
-                  <td className="py-3.5 px-4 font-medium text-slate-200 max-w-xs truncate">
+                  <td className="py-3 px-4 font-medium text-gray-700 dark:text-gray-200 max-w-xs truncate">
                     {essay.title}
                   </td>
-                  <td className="py-3.5 px-4 text-slate-400">{essay.subject}</td>
-                  <td className="py-3.5 px-4">
-                    <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-gh-emerald-950 text-gh-emerald-300 border border-gh-emerald-600/40">
+                  <td className="py-3 px-4 text-gray-500 dark:text-gray-400">{essay.subject}</td>
+                  <td className="py-3 px-4">
+                    <span className="px-2.5 py-0.5 rounded text-xs font-bold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                       {essay.letter_grade || 'A1'}
                     </span>
                   </td>
-                  <td className="py-3.5 px-4 font-bold text-gh-gold-400 font-mono">
+                  <td className="py-3 px-4 font-semibold text-amber-600 dark:text-amber-400 font-mono">
                     {essay.percentage ? `${essay.percentage.toFixed(1)}%` : '92.0%'}
                   </td>
-                  <td className="py-3.5 px-4">
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-gh-emerald-950 text-gh-emerald-300 border border-gh-emerald-700/50">
+                  <td className="py-3 px-4">
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
                       APPROVED
                     </span>
                   </td>
-                  <td className="py-3.5 px-4 text-right">
+                  <td className="py-3 px-4 text-right">
                     <a
                       href={api.getStudentPdfUrl(essay.id)}
                       download={`Report_Card_${essay.student_id}.pdf`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 hover:bg-gh-emerald-600 text-slate-200 hover:text-white transition"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-gray-100 dark:bg-gray-700 hover:bg-[#0077b6] text-gray-700 dark:text-gray-200 hover:text-white transition"
                     >
-                      <FileDown className="w-3.5 h-3.5 text-gh-gold-400" />
-                      <span>PDF Card</span>
+                      <FileDown className="w-3.5 h-3.5" />
+                      <span>PDF</span>
                     </a>
                   </td>
                 </tr>
