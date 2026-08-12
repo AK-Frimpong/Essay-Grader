@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: essay-grader-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/grader.db:/app/grader.db
+      - ./backend/uploads:/app/uploads
+      - ./backend/generated_reports:/app/generated_reports
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: essay-grader-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
