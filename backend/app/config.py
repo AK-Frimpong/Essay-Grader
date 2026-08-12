@@ -6,6 +6,13 @@ import os
 import socket
 from pathlib import Path
 
+# Load environment variables from a local .env file (if present)
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
 # Base Directories (Vercel Serverless /tmp compatibility)
 IS_VERCEL = os.getenv("VERCEL") == "1"
 BASE_DIR = Path("/tmp") if IS_VERCEL else Path(__file__).resolve().parent.parent
@@ -29,6 +36,11 @@ FRONTEND_PORT = int(os.getenv("FRONTEND_PORT", 5173))
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "phi3:mini-4k-instruct")
 OLLAMA_TIMEOUT_SECONDS = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", 90))
+
+# Google Cloud Vision OCR Configuration (handwritten essay recognition)
+# Authenticate via an API key OR a service-account JSON file (GOOGLE_APPLICATION_CREDENTIALS).
+GOOGLE_CLOUD_VISION_API_KEY = os.getenv("GOOGLE_CLOUD_VISION_API_KEY", "")
+VISION_OCR_ENABLED = os.getenv("VISION_OCR_ENABLED", "true").lower() in ("1", "true", "yes", "on")
 
 # Paystack Config (Test keys for Ghana Mobile Money)
 PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY", "pk_test_offline_grader_ghana_momo")

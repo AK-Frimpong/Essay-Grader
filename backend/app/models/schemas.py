@@ -183,6 +183,8 @@ class LANStatusResponse(BaseModel):
     tesseract_message: str = "Tesseract OCR active"
     ollama_model_installed: bool = True
     ollama_installed_models: List[str] = []
+    vision_ocr_available: bool = False
+    vision_ocr_message: str = "Google Cloud Vision OCR not configured."
 
 class AnalyticsOverviewResponse(BaseModel):
     total_essays: int

@@ -31,3 +31,8 @@ backend/generated_reports/*.pdf
 .DS_Store
 Thumbs.db
 *.log
+
+# Local environment / secrets
+.env
+backend/.env
+**/.env

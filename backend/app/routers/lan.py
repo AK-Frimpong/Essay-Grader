@@ -11,7 +11,7 @@ from fastapi import APIRouter
 from app.models.schemas import LANStatusResponse
 from app.config import get_lan_ip, PORT, FRONTEND_PORT, OLLAMA_HOST, OLLAMA_MODEL
 
-from app.services.ocr_service import check_tesseract_status
+from app.services.ocr_service import check_tesseract_status, check_ocr_status
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/lan", tags=["LAN Host Status"])
@@ -43,7 +43,8 @@ def get_lan_status():
     frontend_url = f"http://{lan_ip}:{FRONTEND_PORT}"
     qr_b64 = _generate_qr_base64(frontend_url)
 
-    # 1. Check Tesseract OCR Binary Status
+    # 1. Check OCR Engine Status (Vision preferred, Tesseract fallback)
+    ocr_ok, ocr_msg = check_ocr_status()
     tesseract_ok, tesseract_msg = check_tesseract_status()
 
     # 2. Check local Ollama connectivity and installed models
@@ -80,5 +81,7 @@ def get_lan_status():
         tesseract_installed=tesseract_ok,
         tesseract_message=tesseract_msg,
         ollama_model_installed=model_installed,
-        ollama_installed_models=installed_models
+        ollama_installed_models=installed_models,
+        vision_ocr_available=ocr_ok,
+        vision_ocr_message=ocr_msg
     )

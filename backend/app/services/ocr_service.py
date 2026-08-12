@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 from typing import Tuple, Dict, Any, Optional
 from app.config import UPLOADS_DIR
+from app.services import vision_ocr_service
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +66,21 @@ def check_tesseract_status() -> Tuple[bool, str]:
     except Exception as e:
         logger.warning(f"Tesseract OCR binary check note: {e}")
         return False, "Tesseract OCR binary not found in system PATH. Scanned image OCR will fallback to sample scans or direct document uploads."
+
+
+def check_ocr_status() -> Tuple[bool, str]:
+    """
+    Report the active OCR engine status.
+    Prefers Google Cloud Vision (handwritten-aware); falls back to Tesseract.
+    Returns (is_ready: bool, message: str).
+    """
+    vision_ok, vision_msg = vision_ocr_service.is_vision_ocr_available()
+    if vision_ok:
+        return True, vision_msg
+    tesseract_ok, tesseract_msg = check_tesseract_status()
+    if tesseract_ok:
+        return True, f"Using Tesseract fallback. ({vision_msg})"
+    return False, f"OCR unavailable. Vision: {vision_msg} | Tesseract: {tesseract_msg}"
 
 
 def preprocess_image_opencv(
@@ -151,9 +167,23 @@ def extract_text_from_image(image_path: str, options: Optional[Dict[str, Any]] =
         contrast_enhancement=opts.get("contrast_enhancement", True)
     )
 
-    candidates = []
+    # Primary OCR engine: Google Cloud Vision (handwritten-aware).
+    # Falls back to the multi-pass Tesseract pipeline when Vision is unavailable.
+    vision_ok, _ = vision_ocr_service.is_vision_ocr_available()
+    best_text = ""
 
-    if PYTESSERACT_AVAILABLE:
+    if vision_ok:
+        try:
+            with open(image_path, "rb") as fh:
+                image_bytes = fh.read()
+            best_text = vision_ocr_service.extract_text_with_vision(image_bytes)
+            if not best_text:
+                logger.warning("Vision OCR returned no text; falling back to Tesseract.")
+        except Exception as e:
+            logger.error(f"Vision OCR failed ({e}); falling back to Tesseract.")
+
+    if not best_text and PYTESSERACT_AVAILABLE:
+        candidates = []
         # Load grayscale image for handwritten text layout processing
         raw_gray = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
         if raw_gray is not None:
@@ -192,7 +222,6 @@ def extract_text_from_image(image_path: str, options: Optional[Dict[str, Any]] =
         words = [w.strip() for w in text.split() if any(c.isalnum() for c in w)]
         return len(words)
 
-    best_text = ""
     best_score = -1
 
     for cand in candidates:
@@ -210,22 +239,6 @@ def extract_text_from_image(image_path: str, options: Optional[Dict[str, Any]] =
             cleaned_lines.append(line_str)
 
     cleaned = "\n".join(cleaned_lines).strip()
-
-    HANDWRITTEN_ESSAY_TEXT = (
-        "The Advent of Artificial Intelligence\n"
-        "By: Zaly Stool (SHS 3)\n"
-        "Index Number: 201235\n\n"
-        "Artificial intelligence, or AI, is a new technology that lets computers think and learn like human beings instead of just following simple code. "
-        "Today, AI is used everywhere, from smart phone apps that recommend videos to healthcare systems that help doctors check patient records faster. "
-        "Even though some people worry that AI might replace human workers or make students overly dependent on technology, it is still a very useful tool that makes work easier and faster in everyday life."
-    )
-
-    # Check if OCR result or filename matches handwritten essay patterns or needs clear display
-    lower_best = best_text.lower()
-    keywords = ["advent", "artificial", "intelligence", "zaly", "stool", "201235", "technology", "human", "code", "apps", "healthcare", "written"]
-    
-    if any(kw in lower_best for kw in keywords) or len(cleaned.split()) < 10 or "written" in image_path.lower():
-        cleaned = HANDWRITTEN_ESSAY_TEXT
 
     return cleaned, preprocessed_path
 
