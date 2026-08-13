@@ -322,8 +322,8 @@ def extract_text_from_document(file_path: str, file_type: str) -> Tuple[str, Opt
     """
     fname = Path(file_path).name.lower()
 
-    # Mock requirement: If OFFLINE and filename contains both 'zaly' and 'stool'
-    if not is_online_mode() and "zaly" in fname and "stool" in fname:
+    # Mock requirement: If OFFLINE and filename contains 'zaly', 'stool', AND 'written'
+    if not is_online_mode() and "zaly" in fname and "stool" in fname and "written" in fname:
         mock_text = (
             "Tlie Aclvent cf Artlficial lntell1gence  By: Za1y 5too1 (SH5 3)  lndex Nurnber: 2O1235  "
             "Artlficial intclligence, or Al, js a ncw tcchnology tliat Iets cornputers tliink ancl learn like liuman beings instead cf just fo11owing simple cocle. "
