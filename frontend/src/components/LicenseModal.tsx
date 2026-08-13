@@ -17,7 +17,7 @@ import { api } from '../services/api';
 import { HardwareSignature } from '../types';
 
 export const LicenseModal: React.FC = () => {
-  const { isLicenseModalOpen, setLicenseModalOpen, licenseStatus, setLicenseStatus, addToast } = useAppStore();
+  const { isLicenseModalOpen, setLicenseModalOpen, licenseStatus, setLicenseStatus, addToast, currentTeacher } = useAppStore();
   const [activeTab, setActiveTab] = useState<'license' | 'momo'>('license');
   const [hwSignature, setHwSignature] = useState<HardwareSignature | null>(null);
   const [licenseKeyInput, setLicenseKeyInput] = useState('');
@@ -185,7 +185,9 @@ export const LicenseModal: React.FC = () => {
                 </span>
                 <span className="text-xs text-slate-500 dark:text-slate-400">Valid: {licenseStatus?.valid_until || '2027'}</span>
               </div>
-              <span className="text-[10px] text-slate-600 dark:text-slate-400 truncate mt-1">{licenseStatus?.school_name}</span>
+              <span className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold truncate mt-1">
+                {currentTeacher?.school || licenseStatus?.school_name || 'Achimota Basic School / JHS'}
+              </span>
             </div>
 
             <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
