@@ -89,15 +89,14 @@ export const PinAuthModal: React.FC = () => {
       const res = await api.verifyPin(enteredPin);
       if (res.valid) {
         setTeacherPin(enteredPin);
+        const callback = useAppStore.getState().pinSuccessCallback;
+        setPinModalOpen(false);
         addToast({
           type: 'success',
           title: 'Teacher Access Unlocked',
           message: 'Administrative endpoints and grade approvals authorized.'
         });
-        setPinModalOpen(false);
-        const callback = useAppStore.getState().pinSuccessCallback;
         if (callback) {
-          useAppStore.setState({ pinSuccessCallback: null });
           callback();
         }
       } else {
