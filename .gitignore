@@ -33,3 +33,5 @@ Thumbs.db
 *.log
 backend/tessdata/
 essay_grader_logo_*.png
+.env
+*.env

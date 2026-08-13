@@ -15,6 +15,19 @@ GENERATED_REPORTS_DIR = BASE_DIR / "generated_reports"
 LICENSES_DIR = BASE_DIR / "licenses"
 DATABASE_PATH = BASE_DIR / "grader.db"
 
+# Auto-load .env environment file if present
+for potential_env in [BASE_DIR / ".env", BASE_DIR.parent / ".env", APP_DIR / ".env"]:
+    if potential_env.exists():
+        try:
+            with open(potential_env, "r", encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith("#") and "=" in line:
+                        k, v = line.split("=", 1)
+                        os.environ[k.strip()] = v.strip().strip("'\"")
+        except Exception:
+            pass
+
 # Create directories if they do not exist
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 GENERATED_REPORTS_DIR.mkdir(parents=True, exist_ok=True)
@@ -37,12 +50,16 @@ PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY", "sk_test_offline_grader_g
 # Google Cloud Vision API Config (Online Handwriting OCR)
 GOOGLE_CLOUD_VISION_API_KEY = os.getenv("GOOGLE_CLOUD_VISION_API_KEY", "")
 GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "")
+VISION_OCR_ENABLED = os.getenv("VISION_OCR_ENABLED", "true").lower() in ["true", "1", "yes"]
 
 def is_gcv_configured() -> bool:
     """Check if Google Cloud Vision API Key or Service Account credentials are provided."""
     key = os.getenv("GOOGLE_CLOUD_VISION_API_KEY", GOOGLE_CLOUD_VISION_API_KEY)
     creds = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", GOOGLE_APPLICATION_CREDENTIALS)
-    return bool((key and key.strip()) or (creds and Path(creds).exists()))
+    enabled = os.getenv("VISION_OCR_ENABLED", "true").lower() in ["true", "1", "yes"]
+    is_valid_key = bool(key and key.strip() and not key.startswith("your_api_key") and not key.startswith("AIzaSy..."))
+    is_valid_creds = bool(creds and Path(creds).exists())
+    return enabled and (is_valid_key or is_valid_creds)
 
 def is_online_mode() -> bool:
     """Check if active internet connectivity is available."""

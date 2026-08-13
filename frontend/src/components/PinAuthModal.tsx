@@ -199,7 +199,7 @@ export const PinAuthModal: React.FC = () => {
             <div className="space-y-5">
               <div className="text-center">
                 <p className="text-xs text-slate-600 dark:text-slate-300 mb-3">
-                  Enter Teacher 4-digit PIN to perform restricted actions <span className="text-emerald-600 dark:text-gh-emerald-400 font-semibold">(Default: 1234)</span>
+                  Enter Teacher 4-digit PIN to perform restricted actions
                 </p>
 
                 {/* PIN Masked Dots / Number Boxes */}
@@ -285,7 +285,7 @@ export const PinAuthModal: React.FC = () => {
                     maxLength={10}
                     value={currentPin}
                     onChange={(e) => setCurrentPin(e.target.value)}
-                    placeholder="Enter current PIN (e.g. 1234)"
+                    placeholder="Enter current PIN"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-900 dark:text-white text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#0077b6]"
                     required
                   />

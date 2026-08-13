@@ -25,7 +25,7 @@ import { Rubric } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
 export const IngestionView: React.FC = () => {
-  const { setView, addToast, lanStatus, setBatchFilterIds } = useAppStore();
+  const { setView, addToast, lanStatus, setBatchFilterIds, currentTeacher } = useAppStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const batchFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -33,13 +33,18 @@ export const IngestionView: React.FC = () => {
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
   const [selectedRubricId, setSelectedRubricId] = useState('rubric-waec-bece-english');
   
-  // Metadata - empty by default so teacher fills them in manually
+  // Metadata - pre-filled from signed-in teacher profile
   const [studentName, setStudentName] = useState('');
   const [studentId, setStudentId] = useState('');
-  const [schoolName, setSchoolName] = useState('Achimota Basic School / JHS');
-  const [subject, setSubject] = useState('English Language');
-  const [gradeLevel, setGradeLevel] = useState('JHS 3');
+  const [schoolName, setSchoolName] = useState(currentTeacher?.school || 'Achimota Basic School / JHS');
+  const [subject, setSubject] = useState(currentTeacher?.subject || 'English Language');
+  const [gradeLevel, setGradeLevel] = useState('');
   const [essayTitle, setEssayTitle] = useState('');
+
+  useEffect(() => {
+    if (currentTeacher?.school) setSchoolName(currentTeacher.school);
+    if (currentTeacher?.subject) setSubject(currentTeacher.subject);
+  }, [currentTeacher]);
 
   // Single File State
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -365,7 +370,7 @@ export const IngestionView: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-1">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-1">
               <div className="md:col-span-2">
                 <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">Essay Title / Topic</label>
                 <input
@@ -377,21 +382,24 @@ export const IngestionView: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">Subject & Grade</label>
-                <div className="grid grid-cols-2 gap-2">
-                  <input
-                    type="text"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white"
-                  />
-                  <input
-                    type="text"
-                    value={gradeLevel}
-                    onChange={(e) => setGradeLevel(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white"
-                  />
-                </div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">Subject</label>
+                <input
+                  type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder="e.g. English Language"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1.5">Grade Level</label>
+                <input
+                  type="text"
+                  value={gradeLevel}
+                  onChange={(e) => setGradeLevel(e.target.value)}
+                  placeholder="e.g. JHS 3"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition"
+                />
               </div>
             </div>
           </div>
@@ -595,6 +603,7 @@ export const IngestionView: React.FC = () => {
                   type="text"
                   value={gradeLevel}
                   onChange={(e) => setGradeLevel(e.target.value)}
+                  placeholder="e.g. JHS 3 or SHS 2"
                   className="w-full px-3.5 py-2.5 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm text-gray-900 dark:text-white"
                 />
               </div>
