@@ -6,6 +6,7 @@ interface Toast {
   type: 'success' | 'error' | 'info' | 'warning';
   title: string;
   message: string;
+  duration?: number;
 }
 
 export type ThemeMode = 'dark' | 'light' | 'high-contrast';
@@ -194,11 +195,13 @@ export const useAppStore = create<AppState>((set) => ({
     set((state) => ({
       toasts: [...state.toasts, { ...toast, id }]
     }));
+    // Success notifications last 8.0 seconds so teachers have ample time to read
+    const duration = toast.duration ?? (toast.type === 'success' ? 8000 : 6000);
     setTimeout(() => {
       set((state) => ({
         toasts: state.toasts.filter((t) => t.id !== id)
       }));
-    }, 5000);
+    }, duration);
   },
 
   removeToast: (id) => set((state) => ({
