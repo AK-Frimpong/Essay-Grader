@@ -95,6 +95,11 @@ export const PinAuthModal: React.FC = () => {
           message: 'Administrative endpoints and grade approvals authorized.'
         });
         setPinModalOpen(false);
+        const callback = useAppStore.getState().pinSuccessCallback;
+        if (callback) {
+          useAppStore.setState({ pinSuccessCallback: null });
+          callback();
+        }
       } else {
         triggerError('Invalid Security PIN');
       }

@@ -39,6 +39,7 @@ interface AppState {
   isTeacherAuthenticated: boolean;
   isPinModalOpen: boolean;
   pinModalMode: 'verify' | 'change';
+  pinSuccessCallback?: (() => void) | null;
   
   currentTeacher: TeacherProfile | null;
   registeredTeachers: TeacherProfile[];
@@ -63,7 +64,7 @@ interface AppState {
 
   // Teacher Auth Actions
   setTeacherPin: (pin: string | null) => void;
-  setPinModalOpen: (open: boolean, mode?: 'verify' | 'change') => void;
+  setPinModalOpen: (open: boolean, mode?: 'verify' | 'change', onSuccess?: (() => void) | null) => void;
   setAuthModalOpen: (open: boolean, mode?: 'login' | 'signup') => void;
   setCurrentTeacher: (teacher: TeacherProfile | null) => void;
   addRegisteredTeacher: (teacher: TeacherProfile) => void;
@@ -159,7 +160,8 @@ export const useAppStore = create<AppState>((set) => ({
     set({ teacherPin: pin, isTeacherAuthenticated: !!pin });
   },
 
-  setPinModalOpen: (open, mode = 'verify') => set({ isPinModalOpen: open, pinModalMode: mode }),
+  setPinModalOpen: (open, mode = 'verify', onSuccess = null) => 
+    set({ isPinModalOpen: open, pinModalMode: mode, pinSuccessCallback: onSuccess }),
   
   setAuthModalOpen: (open, mode = 'login') => set({ isAuthModalOpen: open, authModalMode: mode }),
 

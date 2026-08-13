@@ -19,7 +19,7 @@ import { Essay, Grade, CriterionScore, GrammarHighlight } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
 export const TeacherReviewView: React.FC = () => {
-  const { selectedEssayId, setView, addToast, setPinModalOpen, batchFilterIds, setBatchFilterIds } = useAppStore();
+  const { selectedEssayId, setView, addToast, setPinModalOpen, batchFilterIds, setBatchFilterIds, currentTeacher } = useAppStore();
   
   const [essayList, setEssayList] = useState<Essay[]>([]);
   const [activeEssayId, setActiveEssayId] = useState<string>(selectedEssayId || 'essay-stu-001');
@@ -32,8 +32,14 @@ export const TeacherReviewView: React.FC = () => {
   const [criteriaOverrides, setCriteriaOverrides] = useState<CriterionScore[]>([]);
   const [teacherFeedback, setTeacherFeedback] = useState('');
   const [overrideReason, setOverrideReason] = useState('');
-  const [approvedBy, setApprovedBy] = useState('Mr. K. Osei-Tutu (Senior English Tutor)');
+  const [approvedBy, setApprovedBy] = useState(currentTeacher?.name || 'Mr. K. Osei-Tutu (Senior English Tutor)');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (currentTeacher?.name) {
+      setApprovedBy(currentTeacher.name);
+    }
+  }, [currentTeacher]);
 
   // Filter essays if a batch filter is active
   const displayedEssays = (batchFilterIds && batchFilterIds.length > 0)
@@ -110,7 +116,7 @@ export const TeacherReviewView: React.FC = () => {
     setCriteriaOverrides(updated);
   };
 
-  const handleApproveAndLock = async (lockGrade: boolean = true) => {
+  const performReviewSubmission = async (lockGrade: boolean = true) => {
     if (!essay) return;
     setIsSubmitting(true);
     try {
@@ -125,30 +131,24 @@ export const TeacherReviewView: React.FC = () => {
       setGrade(res);
       addToast({
         type: 'success',
-        title: lockGrade ? 'Grade Locked' : 'Review Saved',
+        title: lockGrade ? 'Grade Approved & Locked' : 'Grade Unlocked for Adjustments',
         message: `Final Score: ${res.overall_score}/${res.max_overall_score} (${res.letter_grade})`
       });
     } catch (e: any) {
-      if (e.message?.includes('PIN')) {
-        setPinModalOpen(true, 'verify');
-      }
       addToast({ type: 'error', title: 'Approval Error', message: e.message });
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  const handleApproveAndLock = (lockGrade: boolean = true) => {
+    // Always prompt for Teacher Security PIN before approving & locking grade
+    setPinModalOpen(true, 'verify', () => performReviewSubmission(lockGrade));
+  };
+
   const handleUnlockClick = () => {
-    const { isTeacherAuthenticated } = useAppStore.getState();
-    if (!isTeacherAuthenticated) {
-      setPinModalOpen(true, 'verify');
-      addToast({
-        type: 'info',
-        title: 'Authentication Required',
-        message: 'Please enter your Teacher PIN to unlock grade adjustments.'
-      });
-      return;
-    }
-    handleApproveAndLock(false);
+    // Always prompt for Teacher Security PIN before unlocking grade
+    setPinModalOpen(true, 'verify', () => performReviewSubmission(false));
   };
 
   const isLocked = Boolean(grade?.is_approved || essay?.status === 'APPROVED' || essay?.status === 'LOCKED');
