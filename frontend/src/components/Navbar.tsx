@@ -11,7 +11,8 @@ import {
   Moon,
   Lock,
   Unlock,
-  PanelRight
+  PanelRight,
+  Menu
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 
@@ -110,14 +111,14 @@ export const Navbar: React.FC = () => {
               <span className="max-w-[120px] truncate">{currentTeacher?.name || 'Teacher Profile'}</span>
             </button>
 
-            {/* Sidebar Trigger */}
+            {/* Sidebar Trigger - Hamburger Icon */}
             <button
               onClick={() => setRightSidebarOpen(true, 'nav')}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[#0070f3] hover:bg-[#005f93] text-white transition shadow-sm"
-              title="Open workspace navigation"
+              className="p-2.5 rounded-lg text-white bg-[#0070f3] hover:bg-[#005f93] transition shadow-sm flex items-center justify-center"
+              title="Open navigation menu"
+              aria-label="Open navigation menu"
             >
-              <PanelRight className="w-4 h-4" />
-              <span className="hidden sm:inline">Menu</span>
+              <Menu className="w-5 h-5" />
             </button>
 
           </div>
