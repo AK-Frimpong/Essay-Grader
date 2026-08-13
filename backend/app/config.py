@@ -34,6 +34,27 @@ OLLAMA_TIMEOUT_SECONDS = int(os.getenv("OLLAMA_TIMEOUT_SECONDS", 90))
 PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY", "pk_test_offline_grader_ghana_momo")
 PAYSTACK_SECRET_KEY = os.getenv("PAYSTACK_SECRET_KEY", "sk_test_offline_grader_ghana_momo")
 
+# Google Cloud Vision API Config (Online Handwriting OCR)
+GOOGLE_CLOUD_VISION_API_KEY = os.getenv("GOOGLE_CLOUD_VISION_API_KEY", "")
+GOOGLE_APPLICATION_CREDENTIALS = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "")
+
+def is_gcv_configured() -> bool:
+    """Check if Google Cloud Vision API Key or Service Account credentials are provided."""
+    key = os.getenv("GOOGLE_CLOUD_VISION_API_KEY", GOOGLE_CLOUD_VISION_API_KEY)
+    creds = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", GOOGLE_APPLICATION_CREDENTIALS)
+    return bool((key and key.strip()) or (creds and Path(creds).exists()))
+
+def is_online_mode() -> bool:
+    """Check if active internet connectivity is available."""
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.settimeout(1.0)
+        s.connect(("8.8.8.8", 53))
+        s.close()
+        return True
+    except Exception:
+        return False
+
 # WAEC Grade Scales (A1 - F9)
 WAEC_GRADE_SCALE = [
     {"grade": "A1", "label": "Excellent", "min_score": 80.0, "max_score": 100.0, "color": "#059669"},

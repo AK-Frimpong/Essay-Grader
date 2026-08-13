@@ -9,9 +9,67 @@ import numpy as np
 import logging
 from pathlib import Path
 from typing import Tuple, Dict, Any, Optional
-from app.config import UPLOADS_DIR
+from app.config import UPLOADS_DIR, is_gcv_configured, is_online_mode
 
 logger = logging.getLogger(__name__)
+
+def extract_handwriting_gcv(image_path: str) -> Optional[str]:
+    """
+    Extract dense handwritten text using Google Cloud Vision DOCUMENT_TEXT_DETECTION API.
+    Supports both API Key REST endpoint and Service Account JSON credentials file.
+    """
+    api_key = os.getenv("GOOGLE_CLOUD_VISION_API_KEY", "")
+    creds_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", "")
+
+    # Method 1: Google Cloud Vision API Key (REST Endpoint)
+    if api_key and api_key.strip():
+        try:
+            import base64
+            import requests
+
+            with open(image_path, "rb") as img_file:
+                base64_image = base64.b64encode(img_file.read()).decode("utf-8")
+
+            url = f"https://vision.googleapis.com/v1/images:annotate?key={api_key.strip()}"
+            payload = {
+                "requests": [{
+                    "image": {"content": base64_image},
+                    "features": [{"type": "DOCUMENT_TEXT_DETECTION"}]
+                }]
+            }
+
+            res = requests.post(url, json=payload, timeout=12)
+            if res.status_code == 200:
+                data = res.json()
+                responses = data.get("responses", [])
+                if responses and "fullTextAnnotation" in responses[0]:
+                    extracted_text = responses[0]["fullTextAnnotation"]["text"]
+                    if extracted_text and len(extracted_text.strip()) > 5:
+                        logger.info(f"Successfully extracted handwriting ({len(extracted_text.split())} words) using Google Cloud Vision REST API")
+                        return extracted_text.strip()
+                elif responses and "error" in responses[0]:
+                    logger.warning(f"Google Cloud Vision API Error: {responses[0]['error'].get('message')}")
+        except Exception as e:
+            logger.warning(f"Google Cloud Vision REST API request failed: {e}")
+
+    # Method 2: Google Cloud Vision SDK (Service Account JSON)
+    if creds_path and Path(creds_path).exists():
+        try:
+            from google.cloud import vision
+            client = vision.ImageAnnotatorClient()
+            with open(image_path, "rb") as image_file:
+                content = image_file.read()
+            image = vision.Image(content=content)
+            response = client.document_text_detection(image=image)
+            if not response.error.message:
+                full_text = response.full_text_annotation.text
+                if full_text and len(full_text.strip()) > 5:
+                    logger.info(f"Successfully extracted handwriting ({len(full_text.split())} words) using Google Cloud Vision SDK")
+                    return full_text.strip()
+        except Exception as e:
+            logger.warning(f"Google Cloud Vision SDK request failed: {e}")
+
+    return None
 
 # Configure Tesseract binary and tessdata path
 try:
@@ -142,7 +200,9 @@ def preprocess_image_opencv(
 
 def extract_text_from_image(image_path: str, options: Optional[Dict[str, Any]] = None) -> Tuple[str, str]:
     """
-    Preprocess image and execute multi-pass OCR extraction via PyTesseract.
+    Preprocess image and execute handwriting OCR extraction.
+    Uses Google Cloud Vision DOCUMENT_TEXT_DETECTION in online mode if configured,
+    and falls back to local OpenCV + PyTesseract extraction in offline mode.
     Returns (extracted_text, preprocessed_image_path).
     """
     opts = options or {}
@@ -153,6 +213,16 @@ def extract_text_from_image(image_path: str, options: Optional[Dict[str, Any]] =
         adaptive_threshold=opts.get("adaptive_threshold", True),
         contrast_enhancement=opts.get("contrast_enhancement", True)
     )
+
+    # 1. Try Google Cloud Vision API for high-precision handwriting OCR when online
+    if is_gcv_configured() and is_online_mode():
+        try:
+            gcv_text = extract_handwriting_gcv(image_path)
+            if gcv_text:
+                logger.info(f"Using Google Cloud Vision OCR result for {image_path}")
+                return gcv_text, preprocessed_path
+        except Exception as e:
+            logger.warning(f"Google Cloud Vision OCR failed: {e}. Falling back to local OpenCV + Tesseract OCR.")
 
     candidates = []
 
