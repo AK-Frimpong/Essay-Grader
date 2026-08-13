@@ -157,3 +157,35 @@ export interface AnalyticsOverview {
     letter_grade?: string;
   }>;
 }
+
+export interface PlagiarismMatch {
+  matched_essay_id: string;
+  student_name: string;
+  student_id: string;
+  similarity_score: number;
+  matching_text_snippet: string;
+}
+
+export interface AIDetectionResult {
+  ai_probability: number;
+  classification: string;
+  perplexity_score: number;
+  burstiness_score: number;
+  explanation: string;
+}
+
+export interface WebPlagiarismResult {
+  status: string;
+  similarity_score: number;
+  matched_url?: string;
+  snippet?: string;
+}
+
+export interface AuthenticityReport {
+  essay_id: string;
+  peer_plagiarism_score: number;
+  peer_matches: PlagiarismMatch[];
+  ai_detection: AIDetectionResult;
+  web_plagiarism: WebPlagiarismResult;
+  overall_authenticity_status: string;
+}

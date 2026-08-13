@@ -192,3 +192,33 @@ class AnalyticsOverviewResponse(BaseModel):
     grade_distribution: Dict[str, int]  # e.g. {"A1": 5, "B2": 12, ...}
     criteria_averages: List[Dict[str, Any]]
     recent_submissions: List[Dict[str, Any]]
+
+# --- Plagiarism & AI Authenticity Schemas ---
+
+class PlagiarismMatch(BaseModel):
+    matched_essay_id: str
+    student_name: str
+    student_id: str
+    similarity_score: float  # 0.0 to 100.0
+    matching_text_snippet: str
+
+class AIDetectionResult(BaseModel):
+    ai_probability: float    # 0.0 to 100.0
+    classification: str      # 'Human Written', 'Mixed / Rephrased', 'AI Generated'
+    perplexity_score: float
+    burstiness_score: float
+    explanation: str
+
+class WebPlagiarismResult(BaseModel):
+    status: str              # 'CHECKED', 'OFFLINE_SKIPPED', 'NO_MATCH'
+    similarity_score: float
+    matched_url: Optional[str] = None
+    snippet: Optional[str] = None
+
+class AuthenticityReport(BaseModel):
+    essay_id: str
+    peer_plagiarism_score: float
+    peer_matches: List[PlagiarismMatch]
+    ai_detection: AIDetectionResult
+    web_plagiarism: WebPlagiarismResult
+    overall_authenticity_status: str  # 'PASS_AUTHENTIC', 'NEEDS_TEACHER_REVIEW', 'HIGH_RISK_SUSPICIOUS'

@@ -6,11 +6,12 @@ import uuid
 import json
 import logging
 from fastapi import APIRouter, HTTPException
-from app.models.schemas import EvaluateRequest, AIEvaluationResult
+from app.models.schemas import EvaluateRequest, AIEvaluationResult, AuthenticityReport
 from app.database import get_db, log_audit
 from app.config import get_waec_grade
 from app.services.ollama_service import evaluate_essay_with_ollama
 from app.services.license_service import deduct_grading_credit
+from app.services.plagiarism_service import run_full_authenticity_check
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/grade", tags=["AI Grading Engine"])
@@ -112,3 +113,17 @@ def get_grade(essay_id: str):
         if not grade:
             raise HTTPException(status_code=404, detail="No grade found for this essay.")
         return grade
+
+@router.get("/authenticity/{essay_id}", response_model=AuthenticityReport)
+def get_authenticity_analysis(essay_id: str):
+    """
+    Run peer-to-peer plagiarism, AI detection, and web plagiarism analysis for an essay.
+    Peer & AI detection work 100% offline. Web search runs online when WAN is available.
+    """
+    with get_db() as conn:
+        essay = conn.execute("SELECT * FROM essays WHERE id = ?", (essay_id,)).fetchone()
+        if not essay:
+            raise HTTPException(status_code=404, detail="Essay not found.")
+            
+    text = essay.get("corrected_text") or essay.get("raw_extracted_text", "")
+    return run_full_authenticity_check(essay_id, text)

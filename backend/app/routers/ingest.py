@@ -227,6 +227,7 @@ async def upload_document(
         )
 
     log_audit("INGEST_UPLOAD", essay_id=essay_id, details=f"Uploaded {original_fname} ({file_type}) for {student_name}")
+    deduct_grading_credit(1)
 
     image_url = f"/api/v1/ingest/files/{saved_filename}" if file_type == "IMAGE" else None
     preprocessed_url = f"/api/v1/ingest/files/{Path(preprocessed_path).name}" if preprocessed_path else None
@@ -441,6 +442,8 @@ async def batch_ingest_documents(
         })
 
     log_audit("BATCH_INGEST", details=f"Batch ingested {len(processed_results)} essays ({total_graded} auto-graded)")
+    if processed_results:
+        deduct_grading_credit(len(processed_results))
 
     return {
         "total_processed": len(processed_results),

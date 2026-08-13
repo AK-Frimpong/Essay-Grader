@@ -6,7 +6,8 @@ import {
   HardwareSignature, 
   LANStatus, 
   AnalyticsOverview,
-  CriterionScore
+  CriterionScore,
+  AuthenticityReport
 } from '../types';
 
 // Dynamically resolve backend host using browser origin hostname to support school LAN Wi-Fi access
@@ -210,13 +211,18 @@ export const api = {
     return res.json();
   },
 
-  // AI Evaluation
+  // AI Evaluation & Authenticity
   evaluateEssay: async (essay_id: string, rubric_id?: string): Promise<any> => {
     const res = await handleFetch(`${getBaseApiUrl()}/grade/evaluate`, {
       method: 'POST',
       headers: getHeaders(true),
       body: JSON.stringify({ essay_id, rubric_id })
     }, 'Failed to evaluate essay with AI engine');
+    return res.json();
+  },
+
+  getAuthenticityReport: async (essay_id: string): Promise<AuthenticityReport> => {
+    const res = await handleFetch(`${getBaseApiUrl()}/grade/authenticity/${essay_id}`, undefined, 'Failed to fetch authenticity report');
     return res.json();
   },
 

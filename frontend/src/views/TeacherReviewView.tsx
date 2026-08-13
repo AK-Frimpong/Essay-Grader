@@ -15,7 +15,7 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { api } from '../services/api';
-import { Essay, Grade, CriterionScore, GrammarHighlight } from '../types';
+import { Essay, Grade, CriterionScore, GrammarHighlight, AuthenticityReport } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
 export const TeacherReviewView: React.FC = () => {
@@ -28,12 +28,13 @@ export const TeacherReviewView: React.FC = () => {
   const [auditHistory, setAuditHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Teacher Overrides State
+  // Teacher Overrides & Authenticity State
   const [criteriaOverrides, setCriteriaOverrides] = useState<CriterionScore[]>([]);
   const [teacherFeedback, setTeacherFeedback] = useState('');
   const [overrideReason, setOverrideReason] = useState('');
   const [approvedBy, setApprovedBy] = useState(currentTeacher?.name || 'Mr. K. Osei-Tutu (Senior English Tutor)');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authenticityReport, setAuthenticityReport] = useState<AuthenticityReport | null>(null);
 
   useEffect(() => {
     if (currentTeacher?.name) {
@@ -61,10 +62,12 @@ export const TeacherReviewView: React.FC = () => {
     }).catch(console.error);
   }, [selectedEssayId, batchFilterIds]);
 
-  // Fetch workspace review data whenever activeEssayId changes
+  // Fetch workspace review & authenticity data whenever activeEssayId changes
   useEffect(() => {
     if (!activeEssayId) return;
     setLoading(true);
+    
+    // Fetch review details
     api.getReviewWorkspace(activeEssayId)
       .then((data) => {
         setEssay(data.essay);
@@ -89,6 +92,14 @@ export const TeacherReviewView: React.FC = () => {
         console.error('Failed to load review workspace', err);
       })
       .finally(() => setLoading(false));
+
+    // Fetch plagiarism & AI detection authenticity report
+    api.getAuthenticityReport(activeEssayId)
+      .then(setAuthenticityReport)
+      .catch((err) => {
+        console.error('Failed to load authenticity report', err);
+        setAuthenticityReport(null);
+      });
   }, [activeEssayId]);
 
   // Compute live overridden score and WAEC grade
@@ -285,6 +296,66 @@ export const TeacherReviewView: React.FC = () => {
                 </a>
               )}
             </div>
+
+            {/* Authenticity & Integrity Analysis Card */}
+            {authenticityReport && (
+              <div className="glass-panel p-5 rounded-xl space-y-3 border-l-4 border-indigo-500 dark:border-indigo-400">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm">
+                      Authenticity & Plagiarism Analysis
+                    </h3>
+                  </div>
+                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
+                    authenticityReport.overall_authenticity_status === 'PASS_AUTHENTIC'
+                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 border border-emerald-300'
+                      : authenticityReport.overall_authenticity_status === 'NEEDS_TEACHER_REVIEW'
+                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300 border border-amber-300'
+                      : 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300 border border-red-300'
+                  }`}>
+                    {authenticityReport.overall_authenticity_status === 'PASS_AUTHENTIC' ? '✓ Authentic' : '⚠️ Suspicious / Review'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                  {/* Peer Plagiarism Badge */}
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">Peer Copy Match</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
+                      {authenticityReport.peer_plagiarism_score}%
+                    </div>
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                      {authenticityReport.peer_matches.length > 0
+                        ? `Match: ${authenticityReport.peer_matches[0].student_name}`
+                        : 'No peer copy match'}
+                    </div>
+                  </div>
+
+                  {/* AI Text Detection Badge */}
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">AI Content Probability</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
+                      {authenticityReport.ai_detection.ai_probability}%
+                    </div>
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                      {authenticityReport.ai_detection.classification}
+                    </div>
+                  </div>
+
+                  {/* Web Plagiarism Badge */}
+                  <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">Web Plagiarism</div>
+                    <div className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
+                      {authenticityReport.web_plagiarism.status === 'OFFLINE_SKIPPED' ? 'Offline' : `${authenticityReport.web_plagiarism.similarity_score}%`}
+                    </div>
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                      {authenticityReport.web_plagiarism.status === 'OFFLINE_SKIPPED' ? 'Local DB Check Active' : 'Web Indexed'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Criterion-by-Criterion Override Sliders */}
             <div className="glass-panel p-6 rounded-xl space-y-5">

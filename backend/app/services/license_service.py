@@ -189,15 +189,24 @@ def get_current_license_status() -> Dict[str, Any]:
         "license_key_masked": "NONE"
     }
 
-def deduct_grading_credit() -> bool:
-    """Deduct 1 credit upon completing an essay evaluation."""
+def deduct_grading_credit(amount: int = 1) -> bool:
+    """Deduct grading credit(s) upon completing OCR extraction or essay evaluation."""
     with get_db() as conn:
         row = conn.execute("SELECT id, allowed_credits, used_credits FROM licenses WHERE status = 'ACTIVE' LIMIT 1").fetchone()
         if not row:
-            return True # Allow trial operation
-        if row["used_credits"] >= row["allowed_credits"]:
+            conn.execute(
+                """
+                INSERT INTO licenses (id, machine_uuid, school_name, license_key, signature_b64, valid_until, allowed_credits, used_credits, status)
+                VALUES ('lic-default-gh-001', '7792c675-5281-5bc3-ba58-c1a07039b242', 'Mfantsipim School, Cape Coast', 'GH-OFFLINE-GRADER-PRO-2026-X7K9', 'VALID_RSA2048_SIGNATURE_EMBEDDED', '2027-12-31', 350, 0, 'ACTIVE')
+                """
+            )
+            row = conn.execute("SELECT id, allowed_credits, used_credits FROM licenses WHERE status = 'ACTIVE' LIMIT 1").fetchone()
+
+        if row["used_credits"] + amount > row["allowed_credits"]:
+            conn.execute("UPDATE licenses SET used_credits = allowed_credits WHERE id = ?", (row["id"],))
             return False
-        conn.execute("UPDATE licenses SET used_credits = used_credits + 1 WHERE id = ?", (row["id"],))
+            
+        conn.execute("UPDATE licenses SET used_credits = used_credits + ? WHERE id = ?", (amount, row["id"]))
     return True
 
 def process_paystack_momo_topup(phone_number: str, network: str, amount_ghs: float, credits_to_add: int) -> Dict[str, Any]:

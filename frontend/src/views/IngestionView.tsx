@@ -25,7 +25,7 @@ import { Rubric } from '../types';
 import { useAppStore } from '../store/useAppStore';
 
 export const IngestionView: React.FC = () => {
-  const { setView, addToast, lanStatus, setBatchFilterIds, currentTeacher } = useAppStore();
+  const { setView, addToast, lanStatus, setBatchFilterIds, currentTeacher, setLicenseStatus } = useAppStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const batchFileInputRef = useRef<HTMLInputElement>(null);
 
@@ -181,6 +181,7 @@ export const IngestionView: React.FC = () => {
         title: 'OCR Complete',
         message: `Extracted ${res.word_count} words from ${res.file_type} upload.`
       });
+      api.getLicenseStatus().then(setLicenseStatus).catch(console.error);
     } catch (e: any) {
       addToast({ type: 'error', title: 'OCR Failed', message: e.message });
     } finally {
@@ -211,6 +212,7 @@ export const IngestionView: React.FC = () => {
         title: 'Batch Complete',
         message: `Processed ${res.total_processed} essays (${res.total_graded} graded).`
       });
+      api.getLicenseStatus().then(setLicenseStatus).catch(console.error);
     } catch (e: any) {
       addToast({ type: 'error', title: 'Batch Upload Failed', message: e.message });
     } finally {
@@ -259,6 +261,7 @@ export const IngestionView: React.FC = () => {
         title: 'Evaluation Complete',
         message: `Grade: ${evalRes.letter_grade} (${evalRes.percentage}%)`
       });
+      api.getLicenseStatus().then(setLicenseStatus).catch(console.error);
       setView('review', currentEssayId);
     } catch (e: any) {
       addToast({ type: 'error', title: 'Grading Error', message: e.message });
