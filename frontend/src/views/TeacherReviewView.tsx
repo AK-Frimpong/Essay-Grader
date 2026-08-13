@@ -93,14 +93,14 @@ export const TeacherReviewView: React.FC = () => {
       })
       .finally(() => setLoading(false));
 
-    // Fetch plagiarism & AI detection authenticity report
-    api.getAuthenticityReport(activeEssayId)
+    // Fetch plagiarism & AI detection authenticity report (scoped to batch if batch filter is active)
+    api.getAuthenticityReport(activeEssayId, batchFilterIds && batchFilterIds.length > 0 ? batchFilterIds : undefined)
       .then(setAuthenticityReport)
       .catch((err) => {
         console.error('Failed to load authenticity report', err);
         setAuthenticityReport(null);
       });
-  }, [activeEssayId]);
+  }, [activeEssayId, batchFilterIds]);
 
   // Compute live overridden score and WAEC grade
   const currentTotal = criteriaOverrides.reduce((sum, c) => sum + (c.teacher_score ?? c.ai_score), 0);
@@ -321,7 +321,9 @@ export const TeacherReviewView: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                   {/* Peer Plagiarism Badge */}
                   <div className="p-3 rounded-lg bg-gray-50 dark:bg-gray-800/80 border border-gray-200 dark:border-gray-700">
-                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">Peer Copy Match</div>
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400 font-medium">
+                      {batchFilterIds && batchFilterIds.length > 0 ? 'Batch Peer Copy Match' : 'Peer Copy Match'}
+                    </div>
                     <div className="text-lg font-bold text-gray-900 dark:text-white mt-0.5">
                       {authenticityReport.peer_plagiarism_score}%
                     </div>

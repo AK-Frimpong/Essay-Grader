@@ -5,7 +5,8 @@ Connects to local Ollama (phi3:mini-4k-instruct) or offline heuristic engine to 
 import uuid
 import json
 import logging
-from fastapi import APIRouter, HTTPException
+from typing import Optional, List
+from fastapi import APIRouter, HTTPException, Query
 from app.models.schemas import EvaluateRequest, AIEvaluationResult, AuthenticityReport
 from app.database import get_db, log_audit
 from app.config import get_waec_grade
@@ -115,9 +116,10 @@ def get_grade(essay_id: str):
         return grade
 
 @router.get("/authenticity/{essay_id}", response_model=AuthenticityReport)
-def get_authenticity_analysis(essay_id: str):
+def get_authenticity_analysis(essay_id: str, batch_ids: Optional[str] = Query(None)):
     """
     Run peer-to-peer plagiarism, AI detection, and web plagiarism analysis for an essay.
+    If batch_ids is provided (e.g. ?batch_ids=id1,id2,id3), peer plagiarism compares ONLY within that batch.
     Peer & AI detection work 100% offline. Web search runs online when WAN is available.
     """
     with get_db() as conn:
@@ -126,4 +128,6 @@ def get_authenticity_analysis(essay_id: str):
             raise HTTPException(status_code=404, detail="Essay not found.")
             
     text = essay.get("corrected_text") or essay.get("raw_extracted_text", "")
-    return run_full_authenticity_check(essay_id, text)
+    
+    parsed_batch_ids = [b.strip() for b in batch_ids.split(",") if b.strip()] if batch_ids else None
+    return run_full_authenticity_check(essay_id, text, batch_essay_ids=parsed_batch_ids)

@@ -18,7 +18,8 @@ import {
   Layers,
   FileArchive,
   BarChart3,
-  CheckSquare
+  CheckSquare,
+  Plus
 } from 'lucide-react';
 import { api } from '../services/api';
 import { Rubric } from '../types';
@@ -28,6 +29,7 @@ export const IngestionView: React.FC = () => {
   const { setView, addToast, lanStatus, setBatchFilterIds, currentTeacher, setLicenseStatus } = useAppStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const batchFileInputRef = useRef<HTMLInputElement>(null);
+  const addMoreBatchInputRef = useRef<HTMLInputElement>(null);
 
   const [ingestionMode, setIngestionMode] = useState<'single' | 'batch'>('single');
   const [rubrics, setRubrics] = useState<Rubric[]>([]);
@@ -217,6 +219,56 @@ export const IngestionView: React.FC = () => {
       addToast({ type: 'error', title: 'Batch Upload Failed', message: e.message });
     } finally {
       setIsBatchUploading(false);
+    }
+  };
+
+  const handleAddMoreToBatch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const additionalFiles = Array.from(files);
+    setIsBatchUploading(true);
+    try {
+      const formData = new FormData();
+      additionalFiles.forEach((f) => formData.append('files', f));
+      formData.append('rubric_id', selectedRubricId);
+      formData.append('school_name', schoolName);
+      formData.append('subject', subject);
+      formData.append('grade_level', gradeLevel);
+      formData.append('auto_grade', autoGradeBatch.toString());
+
+      const res = await api.batchUploadDocuments(formData);
+
+      const combinedResults = batchResults
+        ? [...batchResults.results, ...res.results]
+        : res.results;
+
+      const totalProcessed = (batchResults?.total_processed || 0) + res.total_processed;
+      const totalGraded = (batchResults?.total_graded || 0) + res.total_graded;
+
+      const newBatchState = {
+        total_processed: totalProcessed,
+        total_graded: totalGraded,
+        results: combinedResults
+      };
+
+      setBatchResults(newBatchState);
+
+      const allBatchIds = combinedResults.map((r: any) => r.essay_id).filter(Boolean);
+      setBatchFilterIds(allBatchIds);
+
+      addToast({
+        type: 'success',
+        title: 'Added to Batch',
+        message: `Added ${res.total_processed} new essays to batch (Total: ${totalProcessed} essays).`
+      });
+
+      api.getLicenseStatus().then(setLicenseStatus).catch(console.error);
+    } catch (err: any) {
+      addToast({ type: 'error', title: 'Batch Append Failed', message: err.message });
+    } finally {
+      setIsBatchUploading(false);
+      if (addMoreBatchInputRef.current) addMoreBatchInputRef.current.value = '';
     }
   };
 
@@ -765,7 +817,23 @@ export const IngestionView: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
+                  <input
+                    type="file"
+                    ref={addMoreBatchInputRef}
+                    onChange={handleAddMoreToBatch}
+                    multiple
+                    accept=".pdf,.png,.jpg,.jpeg,.zip,.docx"
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => addMoreBatchInputRef.current?.click()}
+                    disabled={isBatchUploading}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white transition shadow-sm disabled:opacity-50"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>{isBatchUploading ? 'Uploading...' : 'Add Essays to Batch'}</span>
+                  </button>
                   <button
                     onClick={() => {
                       const batchEssayIds = batchResults?.results?.map((r: any) => r.essay_id).filter(Boolean) || [];

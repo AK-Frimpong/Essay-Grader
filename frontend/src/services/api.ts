@@ -221,8 +221,9 @@ export const api = {
     return res.json();
   },
 
-  getAuthenticityReport: async (essay_id: string): Promise<AuthenticityReport> => {
-    const res = await handleFetch(`${getBaseApiUrl()}/grade/authenticity/${essay_id}`, undefined, 'Failed to fetch authenticity report');
+  getAuthenticityReport: async (essay_id: string, batch_ids?: string[]): Promise<AuthenticityReport> => {
+    const query = batch_ids && batch_ids.length > 0 ? `?batch_ids=${batch_ids.join(',')}` : '';
+    const res = await handleFetch(`${getBaseApiUrl()}/grade/authenticity/${essay_id}${query}`, undefined, 'Failed to fetch authenticity report');
     return res.json();
   },
 

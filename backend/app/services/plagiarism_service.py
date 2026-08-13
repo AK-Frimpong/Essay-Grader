@@ -25,9 +25,10 @@ def _get_ngrams(tokens: List[str], n: int = 3) -> set:
         return set()
     return set(zip(*[tokens[i:] for i in range(n)]))
 
-def check_peer_plagiarism(target_essay_id: str, target_text: str) -> Tuple[float, List[Dict[str, Any]]]:
+def check_peer_plagiarism(target_essay_id: str, target_text: str, batch_essay_ids: Optional[List[str]] = None) -> Tuple[float, List[Dict[str, Any]]]:
     """
-    Compare target essay text against all stored essays in local SQLite database.
+    Compare target essay text against stored essays in local SQLite database.
+    If batch_essay_ids is provided, compares ONLY within that batch for peer plagiarism.
     Uses Jaccard N-gram similarity and TF-IDF word overlap.
     Returns (max_similarity_score, list_of_matches).
     """
@@ -44,14 +45,24 @@ def check_peer_plagiarism(target_essay_id: str, target_text: str) -> Tuple[float
     max_sim = 0.0
 
     with get_db() as conn:
-        stored_essays = conn.execute(
+        if batch_essay_ids and len(batch_essay_ids) > 0:
+            placeholders = ",".join(["?"] * len(batch_essay_ids))
+            query = f"""
+                SELECT id, student_name, student_id, title, corrected_text, raw_extracted_text 
+                FROM essays 
+                WHERE id != ? AND id IN ({placeholders})
             """
-            SELECT id, student_name, student_id, title, corrected_text, raw_extracted_text 
-            FROM essays 
-            WHERE id != ?
-            """,
-            (target_essay_id,)
-        ).fetchall()
+            params = [target_essay_id] + list(batch_essay_ids)
+            stored_essays = conn.execute(query, params).fetchall()
+        else:
+            stored_essays = conn.execute(
+                """
+                SELECT id, student_name, student_id, title, corrected_text, raw_extracted_text 
+                FROM essays 
+                WHERE id != ?
+                """,
+                (target_essay_id,)
+            ).fetchall()
 
     for row in stored_essays:
         other_text = row.get("corrected_text") or row.get("raw_extracted_text") or ""
@@ -223,11 +234,12 @@ def check_web_plagiarism(text: str) -> Dict[str, Any]:
         }
 
 
-def run_full_authenticity_check(essay_id: str, essay_text: str) -> Dict[str, Any]:
+def run_full_authenticity_check(essay_id: str, essay_text: str, batch_essay_ids: Optional[List[str]] = None) -> Dict[str, Any]:
     """
     Run complete authenticity analysis (Peer Plagiarism + AI Detection + Web Plagiarism).
+    Supports batch_essay_ids scoping for peer plagiarism comparisons within the current batch.
     """
-    max_peer_sim, peer_matches = check_peer_plagiarism(essay_id, essay_text)
+    max_peer_sim, peer_matches = check_peer_plagiarism(essay_id, essay_text, batch_essay_ids=batch_essay_ids)
     ai_result = check_ai_generation(essay_text)
     web_result = check_web_plagiarism(essay_text)
 
