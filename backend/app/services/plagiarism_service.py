@@ -9,7 +9,7 @@ Engineered for Hybrid Offline/Online Classrooms.
 import re
 import math
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Tuple
 from app.database import get_db
 from app.config import is_online_mode
 
